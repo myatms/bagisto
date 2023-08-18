@@ -2,7 +2,7 @@
 # appspec.yml.
 
 # Move the previously downloaded .env file to the right place.
-composer update --working-dir=/var/www/html/bagisto
+composer update --working-dir=/var/www/html/bagisto > /tmp/coderepo/data.txt
 sudo rm -rf /var/www/html/bagisto/.env
 sudo mv /tmp/env.txt /var/www/html/bagisto/.env
 sudo rm -rf /etc/nginx/nginx.conf
@@ -22,6 +22,6 @@ sudo chmod -R 777 /var/www/html/bagisto/storage/
 sudo systemctl restart php-fpm
 sudo systemctl restart nginx
 
-touch /tmp/deployment-done
+
 
 
