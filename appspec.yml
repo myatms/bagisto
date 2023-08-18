@@ -15,7 +15,9 @@ permissions:
 hooks:
   BeforeInstall:
     - location: devops/prepare.sh
+      runas: ec2-user
   AfterInstall:
     - location: devops/setup-app.sh
+      runas: ec2-user
 
 
