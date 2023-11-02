@@ -37,9 +37,21 @@ jobs:
       run: |
         touch .env
         echo "${{ secrets.prod_env }}" > .env
+        
+    - name: PHP Key Generate
+      run: php artisan key:generate
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
+    - name: PHP Key Generate
+      run: php artisan migrate
 
-    # - name: Run test suite
-    #   run: composer run-script test
+    - name: PHP Key Generate
+      run: php artisan db:seed
+
+    - name: PHP Key Generate
+      run: php artisan vendor:publish | echo "0"
+
+    - name: PHP Key Generate
+      run: php artisan storage:link
+    
+
+    
