@@ -27,31 +27,33 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-php-
 
-    - name: Composer Update
-      run: composer update
+    # - name: Composer Update
+    #   run: composer update
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+    # - name: Install dependencies
+    #   run: composer install --prefer-dist --no-progress
 
-    - name: Passing Environment
-      run: |
-        touch .env
-        echo "${{ secrets.prod_env }}" > .env
+    # - name: Passing Environment
+    #   run: |
+    #     touch .env
+    #     echo "${{ secrets.prod_env }}" > .env
         
+    # - name: PHP Key Generate
+    #   run: php artisan key:generate
+
+    # - name: PHP Migrate
+    #   run: php artisan migrate
+
+    # - name: PHP Seed
+    #   run: php artisan db:seed
+
+    # - name: PHP Publish
+    #   run: php artisan vendor:publish | echo "0"
+
+    # - name: PHP Key Generate
+    #   run: php artisan storage:link
     - name: PHP Key Generate
-      run: php artisan key:generate
-
-    - name: PHP Migrate
-      run: php artisan migrate
-
-    - name: PHP Seed
-      run: php artisan db:seed
-
-    - name: PHP Publish
-      run: php artisan vendor:publish | echo "0"
-
-    - name: PHP Key Generate
-      run: php artisan storage:link
+      run: php artisan bagisto:install
 
     - name: Change Dir
       run: cp -R /home/ubuntu/actions-runner/_work/bagisto/* /var/www/html
