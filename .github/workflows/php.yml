@@ -33,10 +33,10 @@ jobs:
     # - name: Install dependencies
     #   run: composer install --prefer-dist --no-progress
 
-    # - name: Passing Environment
-    #   run: |
-    #     touch .env
-    #     echo "${{ secrets.prod_env }}" > .env
+    - name: Passing Environment
+      run: |
+        touch .env
+        echo "${{ secrets.prod_env }}" > .env
         
     # - name: PHP Key Generate
     #   run: php artisan key:generate
@@ -52,7 +52,7 @@ jobs:
 
     # - name: PHP Key Generate
     #   run: php artisan storage:link
-    - name: PHP Key Generate
+    - name: Bagisto Install
       run: php artisan bagisto:install
 
     - name: Change Dir
