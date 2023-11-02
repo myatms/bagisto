@@ -41,19 +41,19 @@ jobs:
     - name: PHP Key Generate
       run: php artisan key:generate
 
-    - name: PHP Key Generate
+    - name: PHP Migrate
       run: php artisan migrate
 
-    - name: PHP Key Generate
+    - name: PHP Seed
       run: php artisan db:seed
 
-    - name: PHP Key Generate
+    - name: PHP Publish
       run: php artisan vendor:publish | echo "0"
 
     - name: PHP Key Generate
       run: php artisan storage:link
 
-    - name: Clean temp directory
+    - name: Change Dir
       run: cp -R /home/ubuntu/actions-runner/_work/bagisto/* /var/www/html
 
     
