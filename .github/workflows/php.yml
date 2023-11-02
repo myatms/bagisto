@@ -54,8 +54,6 @@ jobs:
       run: php artisan storage:link
 
     - name: Clean temp directory
-      run: rm -rf *
-      working-directory: /var/www/html/
-    
+      run: cp -R /home/ubuntu/actions-runner/_work/bagisto/* /var/www/html
 
     
