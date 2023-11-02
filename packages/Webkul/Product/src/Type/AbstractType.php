@@ -13,7 +13,6 @@ use Webkul\Product\Repositories\ProductInventoryRepository;
 use Webkul\Product\Repositories\ProductImageRepository;
 use Webkul\Product\Repositories\ProductVideoRepository;
 use Webkul\Product\Repositories\ProductCustomerGroupPriceRepository;
-use Webkul\Tax\Repositories\TaxCategoryRepository;
 use Webkul\Product\DataTypes\CartItemValidationResult;
 use Webkul\Product\Models\ProductFlat;
 use Webkul\Product\Facades\ProductImage;
@@ -50,13 +49,6 @@ abstract class AbstractType
      * @var bool
      */
     protected $showQuantityBox = false;
-
-    /**
-     * Allow multiple qty.
-     *
-     * @var bool
-     */
-    protected $allowMultipleQty = true;
 
     /**
      * Is product have sufficient quantity.
@@ -118,7 +110,6 @@ abstract class AbstractType
      * @param  \Webkul\Product\Repositories\ProductImageRepository  $productImageRepository
      * @param  \Webkul\Product\Repositories\ProductVideoRepository  $productVideoRepository
      * @param  \Webkul\Product\Repositories\ProductCustomerGroupPriceRepository  $productCustomerGroupPriceRepository
-     * @param  \Webkul\Tax\Repositories\TaxCategoryRepository  $taxCategoryRepository
      * @return void
      */
     public function __construct(
@@ -129,8 +120,7 @@ abstract class AbstractType
         protected ProductInventoryRepository $productInventoryRepository,
         protected ProductImageRepository $productImageRepository,
         protected ProductVideoRepository $productVideoRepository,
-        protected ProductCustomerGroupPriceRepository $productCustomerGroupPriceRepository,
-        protected TaxCategoryRepository $taxCategoryRepository
+        protected ProductCustomerGroupPriceRepository $productCustomerGroupPriceRepository
     )
     {
     }
@@ -202,7 +192,7 @@ abstract class AbstractType
             ) {
                 $data[$attribute->code] = gettype($data[$attribute->code]) === 'object'
                     ? request()->file($attribute->code)->store('product/' . $product->id)
-                    : null;
+                    : $data[$attribute->code];
             }
 
             $attributeValues = $product->attribute_values
@@ -237,29 +227,31 @@ abstract class AbstractType
             } else {
                 $previousTextValue = $attributeValue->text_value;
 
-                $attributeValue->update([$attribute->column_name => $data[$attribute->code]]);
-
                 if (
                     $attribute->type == 'image'
                     || $attribute->type == 'file'
                 ) {
                     /**
-                     * If $data[$attribute->code] is null, that means someone selected the "delete" option.
+                     * If $data[$attribute->code]['delete'] is not empty, that means someone selected the "delete" option.
                      */
-                    if (! $data[$attribute->code]) {
+                    if (! empty($data[$attribute->code]['delete'])) {
                         Storage::delete($previousTextValue);
 
+                        $data[$attribute->code] = null;
+                    }
                     /**
                      * If $data[$attribute->code] is not equal to the previous one, that means someone has
                      * updated the file or image. In that case, we will remove the previous file.
                      */
-                    } else if (
+                    else if (
                         ! empty($previousTextValue)
                         && $data[$attribute->code] != $previousTextValue
                     ) {
                         Storage::delete($previousTextValue);
                     }
                 }
+
+                $attributeValue->update([$attribute->column_name => $data[$attribute->code]]);
             }
         }
 
@@ -273,9 +265,9 @@ abstract class AbstractType
 
         $product->categories()->sync($data['categories']);
 
-        $product->up_sells()->sync($data['up_sell'] ?? []);
+        $product->up_sells()->sync($data['up_sells'] ?? []);
 
-        $product->cross_sells()->sync($data['cross_sell'] ?? []);
+        $product->cross_sells()->sync($data['cross_sells'] ?? []);
 
         $product->related_products()->sync($data['related_products'] ?? []);
 
@@ -343,14 +335,14 @@ abstract class AbstractType
             $value = null;
 
             if ($attribute->code == 'name') {
-                $value = trans('admin::app.copy-of', ['value' => $this->product->name]);
+                $value = trans('admin::app.catalog.products.index.datagrid.copy-of', ['value' => $this->product->name]);
             } elseif ($attribute->code == 'url_key') {
-                $value = trans('admin::app.copy-of-slug', ['value' => $this->product->url_key]);
+                $value = trans('admin::app.catalog.products.index.datagrid.copy-of-slug', ['value' => $this->product->url_key]);
             } elseif ($attribute->code == 'sku') {
                 $value = $product->sku;
             } elseif ($attribute->code === 'product_number') {
-                if (! empty($this->product->product_number)) {
-                    $value = trans('admin::app.copy-of-slug', ['value' => $this->product->product_number]);
+                if (!empty($this->product->product_number)) {
+                    $value = trans('admin::app.catalog.products.index.datagrid.copy-of-slug', ['value' => $this->product->product_number]);
                 }
             } elseif ($attribute->code == 'status') {
                 $value = 0;
@@ -452,28 +444,6 @@ abstract class AbstractType
         $this->product = $product;
 
         return $this;
-    }
-
-    /**
-     * @param  string  $code
-     * @return mixed
-     */
-    public function getAttributeByCode($code)
-    {
-        return core()
-            ->getSingletonInstance(AttributeRepository::class)
-            ->getAttributeByCode($code);
-    }
-
-    /**
-     * @param  integer  $id
-     * @return mixed
-     */
-    public function getAttributeById($id)
-    {
-        return core()
-            ->getSingletonInstance(AttributeRepository::class)
-            ->getAttributeById($id);
     }
 
     /**
@@ -593,16 +563,6 @@ abstract class AbstractType
     }
 
     /**
-     * Return true if more than one qty can be added to cart.
-     *
-     * @return bool
-     */
-    public function isMultipleQtyAllowed()
-    {
-        return $this->allowMultipleQty;
-    }
-
-    /**
      * Is item have quantity.
      *
      * @param  \Webkul\Checkout\Contracts\CartItem  $cartItem
@@ -610,7 +570,7 @@ abstract class AbstractType
      */
     public function isItemHaveQuantity($cartItem)
     {
-        return $cartItem->product->getTypeInstance()->haveSufficientQuantity($cartItem->quantity);
+        return $cartItem->getTypeInstance()->haveSufficientQuantity($cartItem->quantity);
     }
 
     /**
@@ -772,20 +732,14 @@ abstract class AbstractType
      */
     public function getPriceIndex()
     {
-        static $indices = [];
-
-        if (array_key_exists($this->product->id, $indices)) {
-            return $indices[$this->product->id];
-        }
-
         $customerGroup = $this->customerRepository->getCurrentGroup();
 
-        $indices[$this->product->id] = $this->product
+        $indices = $this->product
             ->price_indices
             ->where('customer_group_id', $customerGroup->id)
             ->first();
 
-        return $indices[$this->product->id];
+        return $indices;
     }
 
     /**
@@ -795,18 +749,12 @@ abstract class AbstractType
      */
     public function getInventoryIndex()
     {
-        static $indices = [];
-
-        if (array_key_exists($this->product->id, $indices)) {
-            return $indices[$this->product->id];
-        }
-
-        $indices[$this->product->id] = $this->product
+        $indices = $this->product
             ->inventory_indices
             ->where('channel_id', core()->getCurrentChannel()->id)
             ->first();
 
-        return $indices[$this->product->id];
+        return $indices;
     }
 
     /**
@@ -832,13 +780,14 @@ abstract class AbstractType
     public function getProductPrices()
     {
         return [
-            'regular_price' => [
-                'price'           => core()->convertPrice($this->evaluatePrice($regularPrice = $this->product->price)),
-                'formatted_price' => core()->currency($this->evaluatePrice($regularPrice)),
+            'regular' => [
+                'price'           => core()->convertPrice($regularPrice = $this->evaluatePrice($this->product->price)),
+                'formatted_price' => core()->currency($regularPrice),
             ],
-            'final_price'   => [
-                'price'           => core()->convertPrice($this->evaluatePrice($minimalPrice = $this->getMinimalPrice())),
-                'formatted_price' => core()->currency($this->evaluatePrice($minimalPrice)),
+
+            'final'   => [
+                'price'           => core()->convertPrice($minimalPrice = $this->evaluatePrice($this->getMinimalPrice())),
+                'formatted_price' => core()->currency($minimalPrice),
             ],
         ];
     }
@@ -850,17 +799,10 @@ abstract class AbstractType
      */
     public function getPriceHtml()
     {
-        $minPrice = $this->getMinimalPrice();
-
-        if ($minPrice < $this->product->price) {
-            $html = '<div class="sticker sale">' . trans('shop::app.products.sale') . '</div>'
-            . '<span class="regular-price">' . core()->currency($this->evaluatePrice($this->product->price)) . '</span>'
-            . '<span class="special-price">' . core()->currency($this->evaluatePrice($minPrice)) . '</span>';
-        } else {
-            $html = '<span>' . core()->currency($this->evaluatePrice($this->product->price)) . '</span>';
-        }
-
-        return $html;
+        return view('shop::products.prices.index', [
+            'product' => $this->product,
+            'prices'  => $this->getProductPrices(),
+        ])->render();
     }
 
     /**
@@ -871,25 +813,19 @@ abstract class AbstractType
      */
     public function getTaxInclusiveRate($totalPrice)
     {
-        /* this is added for future purpose like if shipping tax also added then case is needed */
-        $address = null;
-
-        if ($taxCategory = $this->getTaxCategory()) {
-            if (
-                $address === null
-                && auth()->guard('customer')->check()
-            ) {
-                $address = auth()->guard('customer')->user()->addresses->where('default_address', 1)->first();
-            }
-
-            if ($address === null) {
-                $address = Tax::getDefaultAddress();
-            }
-
-            Tax::isTaxApplicableInCurrentAddress($taxCategory, $address, function ($rate) use (&$totalPrice) {
-                $totalPrice = round($totalPrice, 4) + round(($totalPrice * $rate->tax_rate) / 100, 4);
-            });
+        if (! $taxCategory = $this->getTaxCategory()) {
+            return $totalPrice;
         }
+
+        if (auth()->guard('customer')->check()) {
+            $address = auth()->guard('customer')->user()->addresses->where('default_address', 1)->first();
+        } else {
+            $address = Tax::getDefaultAddress();
+        }
+
+        Tax::isTaxApplicableInCurrentAddress($taxCategory, $address, function ($rate) use (&$totalPrice) {
+            $totalPrice = round($totalPrice, 4) + round(($totalPrice * $rate->tax_rate) / 100, 4);
+        });
 
         return $totalPrice;
     }
@@ -905,7 +841,7 @@ abstract class AbstractType
             ? $this->product->parent->tax_category_id
             : $this->product->tax_category_id;
 
-        return $this->taxCategoryRepository->find($taxCategoryId);
+        return core()->getTaxCategoryById($taxCategoryId);
     }
 
     /**
@@ -935,7 +871,7 @@ abstract class AbstractType
         $data = $this->getQtyRequest($data);
 
         if (! $this->haveSufficientQuantity($data['quantity'])) {
-            return trans('shop::app.checkout.cart.quantity.inventory_warning');
+            return trans('shop::app.checkout.cart.inventory-warning');
         }
 
         $price = $this->getFinalPrice();
@@ -1069,7 +1005,7 @@ abstract class AbstractType
             return $result;
         }
 
-        $price = round($item->product->getTypeInstance()->getFinalPrice($item->quantity), 4);
+        $price = round($this->getFinalPrice($item->quantity), 4);
 
         if ($price == $item->base_price) {
             return $result;
@@ -1105,6 +1041,7 @@ abstract class AbstractType
                         return true;
                     }
                 }
+
                 break;
 
             case 'configurable':
@@ -1114,6 +1051,7 @@ abstract class AbstractType
                 ) {
                     return true;
                 }
+
                 break;
         }
 
@@ -1166,7 +1104,7 @@ abstract class AbstractType
 
         $discount = number_format((($this->product->price - $price) * 100) / ($this->product->price), 2);
 
-        $offerLines = trans('shop::app.products.offers', [
+        $offerLines = trans('shop::app.products.type.abstract.offers', [
             'qty'      => $customerGroupPrice->qty,
             'price'    => core()->currency($price),
             'discount' => $discount,
@@ -1188,7 +1126,7 @@ abstract class AbstractType
 
         $customerGroup = $this->customerRepository->getCurrentGroup();
 
-        $customerGroupPrices = $this->productCustomerGroupPriceRepository->checkInLoadedCustomerGroupPrice($product, $customerGroup->id);
+        $customerGroupPrices = $this->productCustomerGroupPriceRepository->prices($product, $customerGroup->id);
 
         if ($customerGroupPrices->isEmpty()) {
             return $product->price;
@@ -1243,21 +1181,5 @@ abstract class AbstractType
         }
 
         return $lastPrice;
-    }
-
-    /**
-     * Check in loaded saleable.
-     *
-     * @return object
-     */
-    public function checkInLoadedSaleableChecks($product, $callback)
-    {
-        static $loadedSaleableChecks = [];
-
-        if (array_key_exists($product->id, $loadedSaleableChecks)) {
-            return $loadedSaleableChecks[$product->id];
-        }
-
-        return $loadedSaleableChecks[$product->id] = $callback($product);
     }
 }

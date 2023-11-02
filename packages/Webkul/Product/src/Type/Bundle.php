@@ -10,7 +10,6 @@ use Webkul\Product\Repositories\ProductInventoryRepository;
 use Webkul\Product\Repositories\ProductImageRepository;
 use Webkul\Product\Repositories\ProductVideoRepository;
 use Webkul\Product\Repositories\ProductCustomerGroupPriceRepository;
-use Webkul\Tax\Repositories\TaxCategoryRepository;
 use Webkul\Product\Repositories\ProductBundleOptionRepository;
 use Webkul\Product\Repositories\ProductBundleOptionProductRepository;
 use Webkul\Product\Helpers\BundleOption;
@@ -36,20 +35,7 @@ class Bundle extends AbstractType
         'height',
         'weight',
         'depth',
-    ];
-
-    /**
-     * These blade files will be included in product edit page.
-     *
-     * @var array
-     */
-    protected $additionalViews = [
-        'admin::catalog.products.accordians.images',
-        'admin::catalog.products.accordians.videos',
-        'admin::catalog.products.accordians.categories',
-        'admin::catalog.products.accordians.bundle-items',
-        'admin::catalog.products.accordians.channels',
-        'admin::catalog.products.accordians.product-links',
+        'manage_stock',
     ];
 
     /**
@@ -67,6 +53,13 @@ class Bundle extends AbstractType
     protected $isChildrenCalculated = true;
 
     /**
+     * Show quantity box.
+     *
+     * @var bool
+     */
+    protected $showQuantityBox = true;
+
+    /**
      * Create a new product type instance.
      *
      * @param  \Webkul\Customer\Repositories\CustomerRepository  $customerRepository
@@ -77,7 +70,6 @@ class Bundle extends AbstractType
      * @param  \Webkul\Product\Repositories\ProductImageRepository  $productImageRepository
      * @param \Webkul\Product\Repositories\ProductVideoRepository  $productVideoRepository
      * @param  \Webkul\Product\Repositories\ProductCustomerGroupPriceRepository  $productCustomerGroupPriceRepository
-     * @param  \Webkul\Tax\Repositories\TaxCategoryRepository  $taxCategoryRepository
      * @param  \Webkul\Product\Repositories\ProductBundleOptionRepository  $productBundleOptionRepository
      * @param  \Webkul\Product\Repositories\ProductBundleOptionProductRepository  $productBundleOptionProductRepository
      * @param  \Webkul\Product\Helpers\BundleOption  $bundleOptionHelper
@@ -92,7 +84,6 @@ class Bundle extends AbstractType
         ProductImageRepository $productImageRepository,
         ProductVideoRepository $productVideoRepository,
         ProductCustomerGroupPriceRepository $productCustomerGroupPriceRepository,
-        TaxCategoryRepository $taxCategoryRepository,
         protected ProductBundleOptionRepository $productBundleOptionRepository,
         protected ProductBundleOptionProductRepository $productBundleOptionProductRepository,
         protected BundleOption $bundleOptionHelper
@@ -106,8 +97,7 @@ class Bundle extends AbstractType
             $productInventoryRepository,
             $productImageRepository,
             $productVideoRepository,
-            $productCustomerGroupPriceRepository,
-            $taxCategoryRepository
+            $productCustomerGroupPriceRepository
         );
     }
 
@@ -193,24 +183,24 @@ class Bundle extends AbstractType
     {
         return [
             'from' => [
-                'regular_price' => [
-                    'price'           => core()->convertPrice($this->evaluatePrice($regularMinimalPrice = $this->getRegularMinimalPrice())),
-                    'formatted_price' => core()->currency($this->evaluatePrice($regularMinimalPrice)),
+                'regular' => [
+                    'price'           => core()->convertPrice($regularMinimalPrice = $this->evaluatePrice($this->getRegularMinimalPrice())),
+                    'formatted_price' => core()->currency($regularMinimalPrice),
                 ],
-                'final_price'   => [
-                    'price'           => core()->convertPrice($this->evaluatePrice($minimalPrice = $this->getMinimalPrice())),
-                    'formatted_price' => core()->currency($this->evaluatePrice($minimalPrice)),
+                'final'   => [
+                    'price'           => core()->convertPrice($minimalPrice = $this->evaluatePrice($this->getMinimalPrice())),
+                    'formatted_price' => core()->currency($minimalPrice),
                 ],
             ],
 
             'to' => [
-                'regular_price' => [
-                    'price'           => core()->convertPrice($this->evaluatePrice($regularMaximumPrice = $this->getRegularMaximumPrice())),
-                    'formatted_price' => core()->currency($this->evaluatePrice($regularMaximumPrice)),
+                'regular' => [
+                    'price'           => core()->convertPrice($regularMaximumPrice = $this->evaluatePrice($this->getRegularMaximumPrice())),
+                    'formatted_price' => core()->currency($regularMaximumPrice),
                 ],
-                'final_price'   => [
-                    'price'           => core()->convertPrice($this->evaluatePrice($maximumPrice = $this->getMaximumPrice())),
-                    'formatted_price' => core()->currency($this->evaluatePrice($maximumPrice)),
+                'final'   => [
+                    'price'           => core()->convertPrice($maximumPrice = $this->evaluatePrice($this->getMaximumPrice())),
+                    'formatted_price' => core()->currency($maximumPrice),
                 ],
             ],
         ];
@@ -223,39 +213,10 @@ class Bundle extends AbstractType
      */
     public function getPriceHtml()
     {
-        $prices = $this->getProductPrices();
-
-        $priceHtml = '';
-
-        if ($this->haveDiscount()) {
-            $priceHtml .= '<div class="sticker sale">' . trans('shop::app.products.sale') . '</div>';
-        }
-
-        $priceHtml .= '<div class="price-from">';
-
-        if ($prices['from']['regular_price']['price'] != $prices['from']['final_price']['price']) {
-            $priceHtml .= '<span class="bundle-regular-price">' . $prices['from']['regular_price']['formatted_price'] . '</span>'
-                . '<span class="bundle-special-price">' . $prices['from']['final_price']['formatted_price'] . '</span>';
-        } else {
-            $priceHtml .= '<span>' . $prices['from']['regular_price']['formatted_price'] . '</span>';
-        }
-
-        if ($prices['from']['regular_price']['price'] != $prices['to']['regular_price']['price']
-            || $prices['from']['final_price']['price'] != $prices['to']['final_price']['price']
-        ) {
-            $priceHtml .= '<span class="bundle-to">To</span>';
-
-            if ($prices['to']['regular_price']['price'] != $prices['to']['final_price']['price']) {
-                $priceHtml .= '<span class="bundle-regular-price">' . $prices['to']['regular_price']['formatted_price'] . '</span>'
-                    . '<span class="bundle-special-price">' . $prices['to']['final_price']['formatted_price'] . '</span>';
-            } else {
-                $priceHtml .= '<span>' . $prices['to']['regular_price']['formatted_price'] . '</span>';
-            }
-        }
-
-        $priceHtml .= '</div>';
-
-        return $priceHtml;
+        return view('shop::products.prices.bundle', [
+            'product' => $this->product,
+            'prices'  => $this->getProductPrices(),
+        ])->render();
     }
 
     /**
@@ -269,17 +230,17 @@ class Bundle extends AbstractType
         $bundleQuantity = parent::handleQuantity((int) $data['quantity']);
 
         if (empty($data['bundle_options'])) {
-            return trans('shop::app.checkout.cart.integrity.missing_options');
+            return trans('shop::app.checkout.cart.missing-options');
         }
 
         $data['bundle_options'] = array_filter($this->validateBundleOptionForCart($data['bundle_options']));
 
         if (empty($data['bundle_options'])) {
-            return trans('shop::app.checkout.cart.integrity.missing_options');
+            return trans('shop::app.checkout.cart.missing-options');
         }
 
         if (! $this->haveSufficientQuantity($data['quantity'])) {
-            return trans('shop::app.checkout.cart.quantity.inventory_warning');
+            return trans('shop::app.checkout.cart.inventory-warning');
         }
 
         $products = parent::prepareForCart($data);
@@ -289,7 +250,7 @@ class Bundle extends AbstractType
 
             /* need to check each individual quantity as well if don't have then show error */
             if (! $product->getTypeInstance()->haveSufficientQuantity($data['quantity'] * $bundleQuantity)) {
-                return trans('shop::app.checkout.cart.quantity.inventory_warning');
+                return trans('shop::app.checkout.cart.inventory-warning');
             }
 
             if (! $product->getTypeInstance()->isSaleable()) {
@@ -525,7 +486,7 @@ class Bundle extends AbstractType
         $price = 0;
 
         foreach ($item->children as $childItem) {
-            $childResult = $childItem->product->getTypeInstance()->validateCartItem($childItem);
+            $childResult = $childItem->getTypeInstance()->validateCartItem($childItem);
 
             if ($childResult->isItemInactive()) {
                 $result->itemIsInactive();

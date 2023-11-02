@@ -2,22 +2,14 @@
 
 namespace Webkul\Core\Repositories;
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
-use Prettus\Repository\Traits\CacheableRepository;
 use Webkul\Core\Eloquent\Repository;
+use Webkul\Core\Contracts\Locale;
 
 class LocaleRepository extends Repository
 {
-    use CacheableRepository;
-
-    /**
-     * Storage path for locale images.
-     *
-     * @var string
-     */
-    protected $storageDir = 'settings/locale-images';
-
     /**
      * Specify model class name.
      *
@@ -25,7 +17,7 @@ class LocaleRepository extends Repository
      */
     public function model(): string
     {
-        return 'Webkul\Core\Contracts\Locale';
+        return Locale::class;
     }
 
     /**
@@ -71,13 +63,17 @@ class LocaleRepository extends Repository
      * Delete.
      *
      * @param  int  $id
-     * @return bool
+     * @return void
      */
     public function delete($id)
     {
         Event::dispatch('core.locale.delete.before', $id);
 
-        parent::delete($id);
+        $locale = parent::find($id);
+
+        $locale->delete($id);
+
+        Storage::delete((string) $locale->logo_path);
 
         Event::dispatch('core.locale.delete.after', $id);
     }
@@ -89,29 +85,29 @@ class LocaleRepository extends Repository
      * @param  \Webkul\Core\Models\Locale  $locale
      * @return void
      */
-    public function uploadImage($attributes, $locale)
+    public function uploadImage($localeImages, $locale)
     {
-        if (isset($attributes['locale_image'])) {
-            foreach ($attributes['locale_image'] as $imageId => $image) {
-                $file = 'locale_image' . '.' . $imageId;
-                $dir = $this->storageDir . '/' . $locale->id;
-
-                if ($locale->locale_image) {
-                    Storage::delete($locale->locale_image);
-                }
-
-                if (request()->hasFile($file)) {
-                    $locale->locale_image = request()->file($file)->store($dir);
-                    $locale->save();
-                }
-            }
-        } else {
-            if ($locale->locale_image) {
-                Storage::delete($locale->locale_image);
+        if (! isset($localeImages['logo_path'])) {
+            if (! empty($localeImages['logo_path'])) {
+                Storage::delete((string) $locale->logo_path);
             }
 
-            $locale->locale_image = null;
+            $locale->logo_path = null;
+
             $locale->save();
+
+            return;
+        }
+        
+        foreach ($localeImages['logo_path'] as $image) {
+            if ($image instanceof UploadedFile) {
+                $locale->logo_path = $image->storeAs(
+                    'locales',
+                    $locale->code . '.' . $image->getClientOriginalExtension()
+                );
+    
+                $locale->save();
+            }
         }
     }
 }

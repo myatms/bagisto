@@ -1,125 +1,301 @@
 @php
     $dependField = $coreConfigRepository->getDependentFieldOrValue($field);
+
     $dependValue = $coreConfigRepository->getDependentFieldOrValue($field, 'value');
 
     $dependNameKey = $item['key'] . '.' . $dependField;
+
     $dependName = $coreConfigRepository->getNameField($dependNameKey);
 
     $field['options'] = $coreConfigRepository->getDependentFieldOptions($field, $value);
 
-    $selectedOption = core()->getConfigData($nameKey, $channel, $locale) ?? '';
-    $dependSelectedOption = core()->getConfigData($dependNameKey, $channel, $locale) ?? '';
+    $selectedOption = core()->getConfigData($nameKey, $currentChannel->code, $currentLocale->code) ?? '';
+
+    $dependSelectedOption = core()->getConfigData($dependNameKey, $currentChannel->code, $currentLocale->code) ?? '';
 @endphp
 
 @if (strpos($field['validation'], 'required_if') !== false)
-    <required-if
-        name = "{{ $name }}"
-        label = "{{ trans($field['title']) }}"
-        :info = "'{{ trans($field['info'] ?? '') }}'"
-        :options = '@json($field['options'])'
-        :result = "'{{ $selectedOption }}'"
-        :validations = "'{{ $validations }}'"
-        :depend = "'{{ $dependName }}'"
-        :depend-result= "'{{ $dependSelectedOption }}'"
-        :channel_locale = "'{{ $channelLocaleInfo }}'"
-    ></required-if>
+    <v-required-if
+        name="{{ $name }}"
+        result="{{ $selectedOption }}"
+        validations="{{ $validations }}"
+        label="@lang($field['title'])"
+        options="{{ json_decode($field['options']) }}"
+        info="{{ json_encode($field['info'] ?? '') }}"
+        depend="{{ $dependName }}"
+        depend-result="{{ $dependSelectedOption }}"
+        channel_locale="{{ $channelLocaleInfo }}"
+    >
+    </v-required-if>
 @else
-    <depends
-        :options = '@json($field['options'])'
-        name = "{{ $name }}"
-        :validations = "'{{ $validations }}'"
-        :depend = "'{{ $dependName }}'"
-        :value = "'{{ $dependValue }}'"
-        :field_name = "'{{ trans($field['title']) }}'"
-        :channel_locale = "'{{ $channelLocaleInfo }}'"
-        :result = "'{{ $selectedOption }}'"
-        :depend-saved-value= "'{{ $dependSelectedOption }}'"
-    ></depends>
+    <v-depends
+        name="{{ $name }}"
+        validations="{{ $validations }}"
+        options="{{ json_decode($field['options']) }}"
+        depend="{{ $dependName }}"
+        value="'{{ $dependValue }}'"
+        label="@lang($field['title'])"
+        channel_locale="{{ $channelLocaleInfo }}"
+        result="{{ $selectedOption }}"
+        depend-saved-value="{{ $dependSelectedOption }}"
+    >
+    </v-depends>
 @endif
 
-@push('scripts')
-    <script type="text/x-template" id="depends-template">
-        <div class="control-group"  :class="[errors.has(name) ? 'has-error' : '']" v-if="this.isVisible">
-            <label :for="name" :class="[ isRequire ? 'required' : '']">
-                @{{ field_name }}
-                <span class="locale"> @{{ channel_locale }} </span>
-            </label>
+@pushOnce('scripts')
+    <script
+        type="text/x-template"
+        id="v-depends-template"
+    >
+        <div>
+            <div class="flex justify-between">
+                <label
+                    class="block leading-[24px] text-[12px] text-gray-800 dark:text-white font-medium"
+                    :class="{ 'required' : isRequire }"
+                    :for="name"
+                >
+                    @{{ label }}
+                </label>
 
-            <select v-if="this.options.length" v-validate= "validations" class="control" :id = "name" :name = "name" v-model="savedValue"
-            :data-vv-as="field_name">
-                <option v-for='(option, index) in this.options' :value="option.value"> @{{ option.title }} </option>
-            </select>
+                <label
+                    class="block leading-[24px] text-[12px] text-gray-800 dark:text-white font-medium"
+                    :for="name"
+                >
+                    @{{ channel_locale }}
+                </label>
+            </div>
+            
+            <v-field 
+                :name="name"
+                v-slot="{ field, errorMessage }"
+                :id="name"
+                v-model="value"
+                :rules="validations"
+                :label="field_name"
+                v-if="this.isVisible"
+            >
+                <select 
+                    v-bind="field"
+                    :class="{ 'border border-red-500': errorMessage }"
+                    class="w-full py-2 px-3 appearance-none border rounded-[6px] text-[14px] text-gray-600 dark:text-gray-300 transition-all hover:border-gray-400"
+                >
+                    <option 
+                        v-for='(option, index) in this.options' 
+                        :value="option.value"
+                        :text="option.title"
+                    > 
+                    </option>
+                </select>
+            </v-field>
 
-            <input v-else type="text"  class="control" v-validate= "validations" :id = "name" :name = "name" v-model="savedValue"
-            :data-vv-as="field_name">
-
-            <span class="control-error" v-if="errors.has(name)">
-                @{{ errors.first(name) }}
-            </span>
+            <v-field 
+                :name="name"
+                v-slot="{ field, errorMessage }"
+                :id="name"
+                :placeholder="info"
+                :rules="validations"
+                v-model="value"
+                :label="field_name"
+                v-else
+            >
+                <input 
+                    type="text"
+                    v-bind="field"
+                    :class="{ 'border border-red-500': errorMessage }"
+                    class="w-full py-2 px-3 appearance-none border rounded-[6px] text-[14px] text-gray-600 dark:text-gray-300 transition-all hover:border-gray-400"
+                />
+            </v-field>
         </div>
     </script>
 
-    <script>
-        Vue.component('depends', {
+    <script
+        type="text/x-template"
+        id="v-required-if-template"
+    >
+        <div>
+            <div class="flex justify-between">
+                <label
+                    class="block leading-[24px] text-[12px] text-gray-800 dark:text-white font-medium"
+                    :class="{ 'required' : isRequire }"
+                    :for="name"
+                >
+                    @{{ label }}
+                </label>
 
-            template: '#depends-template',
+                <label
+                    class="block leading-[24px] text-[12px] text-gray-800 dark:text-white font-medium"
+                    :for="name"
+                >
+                    @{{ channel_locale }}
+                </label>
+            </div>
+            
+            <v-field 
+                :name="name"
+                v-slot="{ field, errorMessage }"
+                :id="name"
+                v-model="value"
+                :rules="appliedRules"
+                :label="label"
+                v-if="this.options.length"
+            >
+                <select 
+                    v-bind="field"
+                    :class="{ 'border border-red-500': errorMessage }"
+                    class="w-full py-2 px-3 appearance-none border rounded-[6px] text-[14px] text-gray-600 dark:text-gray-300 transition-all hover:border-gray-400"
+                >
+                    <option
+                        v-for='option in this.options'
+                        :value="option.value"
+                        :text="option.title"
+                    >
+                    </option>
+                </select>
+            </v-field>
 
-            inject: ['$validator'],
+            <v-field 
+                :name="name"
+                v-slot="{ field, errorMessage }"
+                :id="name"
+                :placeholder="info"
+                :rules="appliedRules"
+                v-model="value"
+                :label="label"
+                v-else
+            >
+                <input 
+                    type="text"
+                    v-bind="field"
+                    :class="{ 'border border-red-500': errorMessage }"
+                    class="w-full appearance-none py-2 px-3 border rounded-[6px] text-[14px] text-gray-600 dark:text-gray-300 transition-all hover:border-gray-400 dark:hover:border-gray-400 focus:border-gray-400 dark:focus:border-gray-400 dark:bg-gray-900 dark:border-gray-800"
+                />
+            </v-field>
+        </div>
+    </script>
+    
+    <script type="module">
+        app.component('v-depends', {
+            template: '#v-depends-template',
 
-            props: ['options', 'name', 'validations', 'depend', 'value', 'field_name', 'channel_locale', 'repository', 'result'],
+            props: [
+                'options',
+                'name',
+                'validations',
+                'depend',
+                'value',
+                'label',
+                'channel_locale',
+                'repository',
+                'result'
+            ],
 
-            data: function() {
+            data() {
                 return {
                     isRequire: false,
                     isVisible: false,
-                    savedValue: "",
+                    value: this.result,
+                };
+            },
+
+            mounted() {
+                if (this.validations || this.validations.indexOf("required") !== -1) {
+                    this.isRequire = true;
+                }
+
+                let dependentElement = document.getElementById(this.depend);
+
+                let dependValue = this.value;
+
+                if (dependValue === 'true') {
+                    dependValue = 1;
+                } else if (dependValue === 'false') {
+                    dependValue = 0;
+                }
+
+                document.addEventListener("change", (event) => {
+                    if (this.depend === event.target.name) {
+                        this.isVisible = this.value === event.target.value;
+                    }
+                });
+
+                if (dependentElement && dependentElement.value == dependValue) {
+                    this.isVisible = true;
+                } else {
+                    this.isVisible = false;
+                }
+
+                if (this.result) {
+                    if (dependentElement && dependentElement.value == this.value) {
+                        this.isVisible = true;
+                    } else {
+                        this.isVisible = false;
+                    }
+                }
+            },
+        });
+    </script>
+
+    <script type="module">
+        app.component('v-required-if', {
+            template: '#v-required-if-template',
+
+            props: [
+                'name',
+                'label',
+                'info',
+                'options',
+                'result',
+                'validations',
+                'depend',
+                'dependResult',
+                'channel_locale',
+            ],
+
+            data() {
+                return {
+                    isRequire: false,
+
+                    appliedRules: [],
+
+                    value: this.result,
+
+                    dependSavedValue: parseInt(this.dependResult)
+                };
+            },
+
+            mounted() {
+                this.isRequire = this.dependSavedValue ? true : false;
+
+                this.updateValidations();
+
+                const dependElement = document.getElementById(this.depend);
+
+                if (dependElement) {
+                    dependElement.addEventListener('change', (e) => {
+                        this.dependSavedValue = !this.dependSavedValue;
+                        this.dependSavedValue = this.dependSavedValue ? 1 : 0;
+                        this.isRequire = this.dependSavedValue ? true : false;
+
+                        this.updateValidations();
+                    });
                 }
             },
 
-            mounted: function () {
-                let self = this;
+            methods: {
+                updateValidations() {
+                    this.appliedRules = this.validations.split('|').filter(validation => !this.validations.includes('required_if'));
 
-                self.savedValue = self.result;
-
-                if (self.validations || (self.validations.indexOf("required") != -1)) {
-                    self.isRequire = true;
-                }
-
-                $(document).ready(function(){
-                    let dependentElement = document.getElementById(self.depend);
-                    let dependValue = self.value;
-
-                    if (dependValue == 'true') {
-                        dependValue = 1;
-                    } else if (dependValue == 'false') {
-                        dependValue = 0;
-                    }
-
-                    $(document).on("change", "select.control", function() {
-                        if (self.depend == this.name) {
-                            if (self.value == this.value) {
-                                self.isVisible = true;
-                            } else {
-                                self.isVisible = false;
-                            }
-                        }
-                    })
-
-                    if (dependentElement && dependentElement.value == dependValue) {
-                        self.isVisible = true;
+                    if (this.isRequire) {
+                        this.appliedRules.push('required');
                     } else {
-                        self.isVisible = false;
+                        this.appliedRules = this.appliedRules.filter((value) => {
+                            return value !== 'required';
+                        });
                     }
 
-                    if (self.result) {
-                        if (dependentElement.value == self.value) {
-                            self.isVisible = true;
-                        } else {
-                            self.isVisible = false;
-                        }
-                    }
-                });
-            }
+                    this.appliedRules = this.appliedRules.join('|');
+                },
+            },
         });
     </script>
-@endpush
+@endPushOnce

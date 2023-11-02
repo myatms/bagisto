@@ -10,7 +10,6 @@ use Webkul\Product\Repositories\ProductInventoryRepository;
 use Webkul\Product\Repositories\ProductImageRepository;
 use Webkul\Product\Repositories\ProductVideoRepository;
 use Webkul\Product\Repositories\ProductCustomerGroupPriceRepository;
-use Webkul\Tax\Repositories\TaxCategoryRepository;
 use Webkul\Product\Repositories\ProductDownloadableLinkRepository;
 use Webkul\Product\Repositories\ProductDownloadableSampleRepository;
 use Webkul\Checkout\Models\CartItem;
@@ -34,32 +33,11 @@ class Downloadable extends AbstractType
     ];
 
     /**
-     * These blade files will be included in product edit page.
-     *
-     * @var array
-     */
-    protected $additionalViews = [
-        'admin::catalog.products.accordians.images',
-        'admin::catalog.products.accordians.videos',
-        'admin::catalog.products.accordians.categories',
-        'admin::catalog.products.accordians.downloadable',
-        'admin::catalog.products.accordians.channels',
-        'admin::catalog.products.accordians.product-links',
-    ];
-
-    /**
      * Is a stokable product type.
      *
      * @var bool
      */
     protected $isStockable = false;
-
-    /**
-     * Show quantity box.
-     *
-     * @var bool
-     */
-    protected $allowMultipleQty = false;
 
     /**
      * Create a new product type instance.
@@ -71,7 +49,6 @@ class Downloadable extends AbstractType
      * @param  \Webkul\Product\Repositories\ProductInventoryRepository  $productInventoryRepository
      * @param  \Webkul\Product\Repositories\ProductImageRepository  $productImageRepository
      * @param  \Webkul\Product\Repositories\ProductCustomerGroupPriceRepository  $productCustomerGroupPriceRepository
-     * @param  \Webkul\Tax\Repositories\TaxCategoryRepository  $taxCategoryRepository
      * @param  \Webkul\Product\Repositories\ProductDownloadableLinkRepository  $productDownloadableLinkRepository
      * @param  \Webkul\Product\Repositories\ProductDownloadableSampleRepository  $productDownloadableSampleRepository
      * @param  \Webkul\Product\Repositories\ProductVideoRepository  $productVideoRepository
@@ -86,7 +63,6 @@ class Downloadable extends AbstractType
         productImageRepository $productImageRepository,
         ProductVideoRepository $productVideoRepository,
         ProductCustomerGroupPriceRepository $productCustomerGroupPriceRepository,
-        TaxCategoryRepository $taxCategoryRepository,
         protected ProductDownloadableLinkRepository $productDownloadableLinkRepository,
         protected ProductDownloadableSampleRepository $productDownloadableSampleRepository
     )
@@ -99,8 +75,7 @@ class Downloadable extends AbstractType
             $productInventoryRepository,
             $productImageRepository,
             $productVideoRepository,
-            $productCustomerGroupPriceRepository,
-            $taxCategoryRepository
+            $productCustomerGroupPriceRepository
         );
     }
 
@@ -178,7 +153,7 @@ class Downloadable extends AbstractType
     public function prepareForCart($data)
     {
         if (empty($data['links'])) {
-            return trans('shop::app.checkout.cart.integrity.missing_links');
+            return trans('shop::app.checkout.cart.missing-links');
         }
 
         $products = parent::prepareForCart($data);
@@ -267,7 +242,7 @@ class Downloadable extends AbstractType
             return $result;
         }
 
-        $price = $item->product->getTypeInstance()->getFinalPrice($item->quantity);
+        $price = $this->getFinalPrice($item->quantity);
 
         foreach ($item->product->downloadable_links as $link) {
             if (! in_array($link->id, $item->additional['links'])) {

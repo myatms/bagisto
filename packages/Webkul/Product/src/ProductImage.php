@@ -4,16 +4,14 @@ namespace Webkul\Product;
 
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Local\LocalFilesystemAdapter;
-use Webkul\Product\Helpers\AbstractProduct;
-use Webkul\Product\Repositories\ProductRepository;
 use Webkul\Customer\Contracts\Wishlist;
+use Webkul\Product\Repositories\ProductRepository;
 
 class ProductImage
 {
     /**
      * Create a new helper instance.
      *
-     * @param  \Webkul\Product\Repositories\ProductRepository  $productRepository
      * @return void
      */
     public function __construct(protected ProductRepository $productRepository)
@@ -28,14 +26,8 @@ class ProductImage
      */
     public function getGalleryImages($product)
     {
-        static $loadedGalleryImages = [];
-
         if (! $product) {
             return [];
-        }
-
-        if (array_key_exists($product->id, $loadedGalleryImages)) {
-            return $loadedGalleryImages[$product->id];
         }
 
         $images = [];
@@ -51,7 +43,7 @@ class ProductImage
         if (
             ! $product->parent_id
             && ! count($images)
-            && ! count($product->videos)
+            && ! count($product->videos ?? [])
         ) {
             $images[] = $this->getFallbackImageUrls();
         }
@@ -65,7 +57,7 @@ class ProductImage
             $images = $this->getGalleryImages($product->parent);
         }
 
-        return $loadedGalleryImages[$product->id] = $images;
+        return $images;
     }
 
     /**
@@ -83,7 +75,6 @@ class ProductImage
                 $product = $item->product;
             }
         } else {
-            
             $product = $item->product;
         }
 
@@ -100,17 +91,11 @@ class ProductImage
      */
     public function getProductBaseImage($product, array $galleryImages = null)
     {
-        static $loadedBaseImages = [];
-
         if (! $product) {
             return;
         }
 
-        if (array_key_exists($product->id, $loadedBaseImages)) {
-            return $loadedBaseImages[$product->id];
-        }
-
-        return $loadedBaseImages[$product->id] = $galleryImages
+        return $galleryImages
             ? $galleryImages[0]
             : $this->otherwiseLoadFromProduct($product);
     }
@@ -134,7 +119,6 @@ class ProductImage
      * Get cached urls configured for intervention package.
      *
      * @param  string  $path
-     * @return array
      */
     private function getCachedImageUrls($path): array
     {
@@ -157,23 +141,19 @@ class ProductImage
 
     /**
      * Get fallback urls.
-     *
-     * @return array
      */
     private function getFallbackImageUrls(): array
     {
         return [
-            'small_image_url'    => bagisto_asset('images/product/small-product-placeholder.webp'),
-            'medium_image_url'   => bagisto_asset('images/product/medium-product-placeholder.webp'),
-            'large_image_url'    => bagisto_asset('images/product/large-product-placeholder.webp'),
-            'original_image_url' => bagisto_asset('images/product/large-product-placeholder.webp'),
+            'small_image_url'    => bagisto_asset('images/small-product-placeholder.webp'),
+            'medium_image_url'   => bagisto_asset('images/medium-product-placeholder.webp'),
+            'large_image_url'    => bagisto_asset('images/large-product-placeholder.webp'),
+            'original_image_url' => bagisto_asset('images/large-product-placeholder.webp'),
         ];
     }
 
     /**
      * Is driver local.
-     *
-     * @return bool
      */
     private function isDriverLocal(): bool
     {

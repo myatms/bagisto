@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Storage;
 use Kalnoy\Nestedset\Collection as NestedCollection;
 use Kalnoy\Nestedset\NodeTrait;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Shetabit\Visitor\Traits\Visitable;
 use Webkul\Attribute\Models\AttributeProxy;
 use Webkul\Category\Contracts\Category as CategoryContract;
 use Webkul\Category\Database\Factories\CategoryFactory;
@@ -18,7 +18,7 @@ use Webkul\Product\Models\ProductProxy;
 
 class Category extends TranslatableModel implements CategoryContract
 {
-    use HasFactory, NodeTrait;
+    use HasFactory, NodeTrait, Visitable;
 
     /**
      * Translated attributes.
@@ -60,7 +60,7 @@ class Category extends TranslatableModel implements CategoryContract
      *
      * @var array
      */
-    protected $appends = ['image_url', 'banner_url', 'category_icon_url'];
+    protected $appends = ['logo_url', 'banner_url', 'url'];
 
     /**
      * The products that belong to the category.
@@ -87,81 +87,6 @@ class Category extends TranslatableModel implements CategoryContract
                 'translations',
                 'options.translations',
             ]);
-    }
-
-    /**
-     * Finds and returns the category within a nested category tree.
-     *
-     * Will search in root category by default.
-     *
-     * Is used to minimize the numbers of sql queries for it only uses the already cached tree.
-     *
-     * @param  \Webkul\Velocity\Contracts\Category[]  $categoryTree
-     * @return \Webkul\Velocity\Contracts\Category
-     */
-    public function findInTree($categoryTree = null): Category
-    {
-        if (! $categoryTree) {
-            $categoryTree = app(CategoryRepository::class)->getVisibleCategoryTree($this->getRootCategory()->id);
-        }
-
-        $category = $categoryTree->first();
-
-        if (! $category) {
-            throw new NotFoundHttpException('category not found in tree');
-        }
-
-        if ($category->id === $this->id) {
-            return $category;
-        }
-
-        return $this->findInTree($category->children);
-    }
-
-    /**
-     * Getting the root category of a category.
-     *
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object
-     */
-    public function getRootCategory()
-    {
-        return self::query()
-            ->where([
-                [
-                    'parent_id',
-                    '=',
-                    null,
-                ], [
-                    '_lft',
-                    '<=',
-                    $this->_lft,
-                ], [
-                    '_rgt',
-                    '>=',
-                    $this->_rgt,
-                ],
-            ])
-            ->first();
-    }
-
-    /**
-     * Returns all categories within the category's path.
-     *
-     * @return \Webkul\Velocity\Contracts\Category[]
-     */
-    public function getPathCategories(): array
-    {
-        $category = $this->findInTree();
-
-        $categories = [$category];
-
-        while (isset($category->parent)) {
-            $category = $category->parent;
-
-            $categories[] = $category;
-        }
-
-        return array_reverse($categories);
     }
 
     /**
@@ -225,17 +150,31 @@ class Category extends TranslatableModel implements CategoryContract
     }
 
     /**
+     * Get url attribute.
+     *
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        if ($categoryTranslation = $this->translate(core()->getCurrentLocale()->code)) {
+            return url($categoryTranslation->url_path);
+        }
+        
+        return url($this->translate(core()->getDefaultChannelLocaleCode())->url_path);
+    }
+
+    /**
      * Get image url for the category image.
      *
      * @return string
      */
-    public function getImageUrlAttribute()
+    public function getLogoUrlAttribute()
     {
-        if (! $this->image) {
+        if (! $this->logo_path) {
             return;
         }
 
-        return Storage::url($this->image);
+        return Storage::url($this->logo_path);
     }
 
     /**
@@ -245,25 +184,11 @@ class Category extends TranslatableModel implements CategoryContract
      */
     public function getBannerUrlAttribute()
     {
-        if (! $this->category_banner) {
+        if (! $this->banner_path) {
             return;
         }
 
-        return Storage::url($this->category_banner);
-    }
-
-    /**
-     * Get category icon url for the category icon image.
-     *
-     * @return string
-     */
-    public function getCategoryIconUrlAttribute()
-    {
-        if (! $this->category_icon_path) {
-            return;
-        }
-
-        return Storage::url($this->category_icon_path);
+        return Storage::url($this->banner_path);
     }
 
     /**

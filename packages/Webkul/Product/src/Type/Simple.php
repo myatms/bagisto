@@ -7,20 +7,6 @@ use Webkul\Product\Helpers\Indexers\Price\Simple as SimpleIndexer;
 class Simple extends AbstractType
 {
     /**
-     * These blade files will be included in product edit page.
-     *
-     * @var array
-     */
-    protected $additionalViews = [
-        'admin::catalog.products.accordians.inventories',
-        'admin::catalog.products.accordians.images',
-        'admin::catalog.products.accordians.videos',
-        'admin::catalog.products.accordians.categories',
-        'admin::catalog.products.accordians.channels',
-        'admin::catalog.products.accordians.product-links',
-    ];
-
-    /**
      * Show quantity box.
      *
      * @var bool
@@ -35,24 +21,18 @@ class Simple extends AbstractType
      */
     public function isSaleable()
     {
-        return $this->checkInLoadedSaleableChecks($this->product, function ($product) {
-            if (! $product->status) {
-                return false;
-            }
-
-            if (
-                is_callable(config('products.isSaleable')) &&
-                call_user_func(config('products.isSaleable'), $product) === false
-            ) {
-                return false;
-            }
-
-            if ($this->haveSufficientQuantity(1)) {
-                return true;
-            }
-
+        if (! $this->product->status) {
             return false;
-        });
+        }
+
+        if (
+            is_callable(config('products.isSaleable'))
+            && call_user_func(config('products.isSaleable'), $this->product) === false
+        ) {
+            return false;
+        }
+
+        return $this->haveSufficientQuantity(1);
     }
 
     /**
@@ -63,7 +43,11 @@ class Simple extends AbstractType
      */
     public function haveSufficientQuantity(int $qty): bool
     {
-        return $qty <= $this->totalQuantity() ?: (bool) core()->getConfigData('catalog.inventory.stock_options.backorders');
+        if (! $this->product->manage_stock){
+            return true;
+        }
+
+        return $qty <= $this->totalQuantity() ?: (bool) core()->getConfigData('catalog.inventory.stock_options.back_orders');
     }
 
     /**

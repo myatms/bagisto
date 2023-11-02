@@ -67,7 +67,7 @@ abstract class Payment
      */
     public function getConfigData($field)
     {
-        return core()->getConfigData('sales.paymentmethods.' . $this->getCode() . '.' . $field);
+        return core()->getConfigData('sales.payment_methods.' . $this->getCode() . '.' . $field);
     }
 
     abstract public function getRedirectUrl();
@@ -134,7 +134,7 @@ abstract class Payment
         }
 
         return [
-            'title' => trans('admin::app.admin.system.instructions'),
+            'title' => trans('admin::app.configuration.instructions'),
             'value' => $this->getConfigData('instructions'),
         ];
     }

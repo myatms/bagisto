@@ -1,329 +1,510 @@
-@extends('admin::layouts.content')
+<x-admin::layouts>
+    {{-- Title of the page --}}
+    <x-slot:title>
+        @lang('admin::app.catalog.categories.edit.title')
+    </x-slot:title>
 
-@section('page_title')
-    {{ __('admin::app.catalog.categories.edit-title') }}
-@stop
+    @php
+        $currentLocale = core()->getRequestedLocale();
+    @endphp
 
-@push('css')
-    <style>
-       @media only screen and (max-width: 728px){
-            .content-container .content .page-header .page-title{
-                width: 100%;
-            }
+    {!! view_render_event('bagisto.admin.catalog.categories.edit.before') !!}
 
-            .content-container .content .page-header .page-title .control-group {
-                margin-top: 20px!important;
-                width: 100%!important;
-                margin-left: 0!important;
-            }
+    {{-- Category Edit Form --}}
+    <x-admin::form
+        :action="route('admin.catalog.categories.update', $category->id)"
+        enctype="multipart/form-data"
+        method="PUT"
+    >
 
-            .content-container .content .page-header .page-action {
-                margin-top: 10px!important;
-                float: left;
-            }
-       }
-    </style>
-@endpush
+        {!! view_render_event('bagisto.admin.catalog.categories.edit.edit_form_controls.before', ['category' => $category]) !!}
 
-@section('content')
-    <div class="content">
-        @php
-            $locale = core()->getRequestedLocaleCode();
-        @endphp
+        <div class="flex gap-[16px] justify-between items-center max-sm:flex-wrap">
+            <p class="text-[20px] text-gray-800 dark:text-white font-bold">
+                @lang('admin::app.catalog.categories.edit.title')
+            </p>
 
-        <form method="POST" action="" @submit.prevent="onSubmit" enctype="multipart/form-data">
-            <div class="page-header">
-                <div class="page-title">
-                    <h1>
-                        <i class="icon angle-left-icon back-link" onclick="window.location = '{{ route('admin.catalog.categories.index') }}'"></i>
+            <div class="flex gap-x-[10px] items-center">
+                <!-- Back Button -->
+                <a
+                    href="{{ route('admin.catalog.categories.index') }}"
+                    class="transparent-button hover:bg-gray-200 dark:hover:bg-gray-800 dark:text-white "
+                >
+                    @lang('admin::app.catalog.categories.edit.back-btn')
+                </a>
 
-                        {{ __('admin::app.catalog.categories.edit-title') }}
-                    </h1>
-
-                    <div class="control-group">
-                        <select class="control" id="locale-switcher" onChange="window.location.href = this.value">
-                            @foreach (core()->getAllLocales() as $localeModel)
-
-                                <option value="{{ route('admin.catalog.categories.update', $category->id) . '?locale=' . $localeModel->code }}" {{ ($localeModel->code) == $locale ? 'selected' : '' }}>
-                                    {{ $localeModel->name }}
-                                </option>
-
-                            @endforeach
-                        </select>
-                    </div>
-
-                </div>
-
-                <div class="page-action">
-                    <button type="submit" class="btn btn-lg btn-primary">
-                        {{ __('admin::app.catalog.categories.save-btn-title') }}
-                    </button>
-                </div>
+                <!-- Save Button -->
+                <button
+                    type="submit"
+                    class="primary-button"
+                >
+                    @lang('admin::app.catalog.categories.edit.save-btn')
+                </button>
             </div>
+        </div>
 
-            <div class="page-content">
-                <div class="form-container">
-                    @csrf()
+        <!-- Filter Row -->
+        <div class="flex  gap-[16px] justify-between items-center mt-[28px] max-md:flex-wrap">
+            <div class="flex gap-x-[4px] items-center">
+                {{-- Locale Switcher --}}
+                <x-admin::dropdown>
+                    {{-- Dropdown Toggler --}}
+                    <x-slot:toggle>
+                        <button
+                            type="button"
+                            class="transparent-button px-[4px] py-[6px] hover:bg-gray-200 dark:hover:bg-gray-800 focus:bg-gray-200 dark:focus:bg-gray-800 dark:text-white"
+                        >
+                            <span class="icon-language text-[24px] "></span>
 
-                    <input name="_method" type="hidden" value="PUT">
-
-                    {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.general.before', ['category' => $category]) !!}
-
-                    <accordian title="{{ __('admin::app.catalog.categories.general') }}" :active="true">
-                        <div slot="body">
-                            {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.general.controls.before', ['category' => $category]) !!}
-
-                            <div class="control-group" :class="[errors.has('{{$locale}}[name]') ? 'has-error' : '']">
-                                <label for="name" class="required">{{ __('admin::app.catalog.categories.name') }}
-                                    <span class="locale">[{{ $locale }}]</span>
-                                </label>
-
-                                <input 
-                                    type="text" v-validate="'required'" 
-                                    name="{{$locale}}[name]"
-                                    value="{{ old($locale)['name'] ?? ($category->translate($locale)['name'] ?? '') }}"
-                                    class="control" 
-                                    id="name" 
-                                    data-vv-as="&quot;{{ __('admin::app.catalog.categories.name') }}&quot;"
-                                />
-
-                                <span
-                                    class="control-error" 
-                                    v-text="errors.first('{!!$locale!!}[name]')"
-                                    v-if="errors.has('{{$locale}}[name]')">
-                                </span>
-                            </div>
-
-                            <div class="control-group" :class="[errors.has('status') ? 'has-error' : '']">
-                                <label for="status" class="required">{{ __('admin::app.catalog.categories.visible-in-menu') }}</label>
-                                <select class="control" v-validate="'required'" id="status" name="status" data-vv-as="&quot;{{ __('admin::app.catalog.categories.visible-in-menu') }}&quot;">
-                                    <option value="1" {{ $category->status ? 'selected' : '' }}>
-                                        {{ __('admin::app.catalog.categories.yes') }}
-                                    </option>
-                                    <option value="0" {{ $category->status ? '' : 'selected' }}>
-                                        {{ __('admin::app.catalog.categories.no') }}
-                                    </option>
-                                </select>
-                                <span class="control-error" v-if="errors.has('status')">@{{ errors.first('status') }}</span>
-                            </div>
-
-                            <div class="control-group" :class="[errors.has('position') ? 'has-error' : '']">
-                                <label for="position" class="required">{{ __('admin::app.catalog.categories.position') }}</label>
-                                <input type="text" v-validate="'required|numeric'" class="control" id="position" name="position" value="{{ old('position') ?: $category->position }}" data-vv-as="&quot;{{ __('admin::app.catalog.categories.position') }}&quot;"/>
-                                <span class="control-error" v-if="errors.has('position')">@{{ errors.first('position') }}</span>
-                            </div>
-
-                            {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.general.controls.after', ['category' => $category]) !!}
-                        </div>
-                    </accordian>
-
-                    {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.general.after', ['category' => $category]) !!}
-
-                    {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.description_images.before', ['category' => $category]) !!}
-
-                    <accordian title="{{ __('admin::app.catalog.categories.description-and-images') }}" :active="true">
-                        <div slot="body">
-                            {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.description_images.controls.before', ['category' => $category]) !!}
-
-                            <div class="control-group" :class="[errors.has('display_mode') ? 'has-error' : '']">
-                                <label for="display_mode" class="required">{{ __('admin::app.catalog.categories.display-mode') }}</label>
-                                <select class="control" v-validate="'required'" id="display_mode" name="display_mode" data-vv-as="&quot;{{ __('admin::app.catalog.categories.display-mode') }}&quot;">
-                                    <option value="products_and_description" {{ $category->display_mode == 'products_and_description' ? 'selected' : '' }}>
-                                        {{ __('admin::app.catalog.categories.products-and-description') }}
-                                    </option>
-                                    <option value="products_only" {{ $category->display_mode == 'products_only' ? 'selected' : '' }}>
-                                        {{ __('admin::app.catalog.categories.products-only') }}
-                                    </option>
-                                    <option value="description_only" {{ $category->display_mode == 'description_only' ? 'selected' : '' }}>
-                                        {{ __('admin::app.catalog.categories.description-only') }}
-                                    </option>
-                                </select>
-                                <span class="control-error" v-if="errors.has('display_mode')">@{{ errors.first('display_mode') }}</span>
-                            </div>
-
-                            <description></description>
-
-                            <div class="control-group {!! $errors->has('image.*') ? 'has-error' : '' !!}">
-                                <label>{{ __('admin::app.catalog.categories.image') }}</label>
-
-                                <image-wrapper button-label="{{ __('admin::app.catalog.products.add-image-btn-title') }}" input-name="image" :multiple="false"  :images='"{{ $category->image_url }}"'></image-wrapper>
-
-                                <span class="control-info mb-5">{{ __('admin::app.catalog.products.image-drop') }}</span>
-
-                                <span class="control-error" v-if="{!! $errors->has('image.*') !!}">
-                                    @foreach ($errors->get('image.*') as $key => $message)
-                                        @php echo str_replace($key, 'Image', $message[0]); @endphp
-                                    @endforeach
-                                </span>
-
-                                <label>{{ __('admin::app.catalog.categories.category_banner') }}</label>
-                                <large-image-wrapper button-label="{{ __('admin::app.catalog.products.add-image-btn-title') }}" input-name="category_banner" :multiple="false" :images='"{{ $category->banner_url }}"'></large-image-wrapper>
-
-                                <span class="control-error" v-if="{!! $errors->has('image.*') !!}">
-                                    @foreach ($errors->get('image.*') as $key => $message)
-                                        @php echo str_replace($key, 'Image', $message[0]); @endphp
-                                    @endforeach
-                                </span>
-
-                                <span class="control-info">{{ __('admin::app.catalog.products.image-drop') }}</span>
-
-                                <span class="control-info mt-10">{{ __('admin::app.catalog.categories.banner_size') }}</span>   
-                            </div>
+                            {{ $currentLocale->name }}
                             
-                            {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.description_images.controls.after', ['category' => $category]) !!}
-                        </div>
-                    </accordian>
+                            <input type="hidden" name="locale" value="{{ $currentLocale->code }}"/>
 
-                    {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.description_images.after', ['category' => $category]) !!}
+                            <span class="icon-sort-down text-[24px]"></span>
+                        </button>
+                    </x-slot:toggle>
+
+                    {{-- Dropdown Content --}}
+                    <x-slot:content class="!p-[0px]">
+                        @foreach (core()->getAllLocales() as $locale)
+                            <a
+                                href="?{{ Arr::query(['locale' => $locale->code]) }}"
+                                class="flex gap-[10px] px-5 py-2 text-[16px] cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-950 dark:text-white {{ $locale->code == $currentLocale->code ? 'bg-gray-100 dark:bg-gray-950' : ''}}"
+                            >
+                                {{ $locale->name }}
+                            </a>
+                        @endforeach
+                    </x-slot:content>
+                </x-admin::dropdown>
+            </div>
+        </div>
+
+        {{-- Full Pannel --}}
+        <div class="flex gap-[10px] mt-[14px] max-xl:flex-wrap">
+            {{-- Left Section --}}
+            <div class=" flex flex-col gap-[8px] flex-1 max-xl:flex-auto">
+
+                {!! view_render_event('bagisto.admin.catalog.categories.edit.card.general.before', ['category' => $category]) !!}
+
+                <!-- General -->
+                <div class="p-[16px] bg-white dark:bg-gray-900 rounded-[4px] box-shadow">
+                    <p class="mb-[16px] text-[16px] text-gray-800 dark:text-white font-semibold">
+                        @lang('admin::app.catalog.categories.edit.general')
+                    </p>
+
+                    {{-- Name --}}
+                    <x-admin::form.control-group class="mb-[10px]">
+                        <x-admin::form.control-group.label class="required">
+                            @lang('admin::app.catalog.categories.edit.name')
+                        </x-admin::form.control-group.label>
+
+                        <v-field
+                            type="text"
+                            name="{{$currentLocale->code}}[name]"
+                            value="{{ old($currentLocale->code)['name'] ?? ($category->translate($currentLocale->code)['name'] ?? '') }}"
+                            label="{{ trans('admin::app.catalog.categories.edit.name') }}"
+                            rules="required"
+                            v-slot="{ field }"
+                        >
+                            <input
+                                type="text"
+                                name="{{$currentLocale->code}}[name]"
+                                id="{{$currentLocale->code}}[name]"
+                                v-bind="field"
+                                :class="[errors['{{ $currentLocale->code }}[name]'] ? 'border border-red-600 hover:border-red-600' : '']"
+                                class="flex w-full min-h-[39px] py-2 px-3 border rounded-[6px] text-[14px] text-gray-600 dark:text-gray-300 transition-all hover:border-gray-400 dark:hover:border-gray-400 focus:border-gray-400 dark:focus:border-gray-400 dark:bg-gray-900 dark:border-gray-800"
+                                placeholder="{{ trans('admin::app.catalog.categories.edit.name') }}"
+                                v-slugify-target:{{$currentLocale->code . '[slug]'}}="setValues"
+                            >
+                        </v-field>
+
+                        <x-admin::form.control-group.error
+                            control-name="{{ $currentLocale->code}}[name]"
+                        >
+                        </x-admin::form.control-group.error>
+                    </x-admin::form.control-group>
 
                     @if ($categories->count())
-                        {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.parent_category.before', ['category' => $category]) !!}
+                        <div class="mb-[10px]">
+                            {{-- Parent category --}}
+                            <label class="block mb-[10px] text-[12px] text-gray-800 dark:text-white font-medium leading-[24px]">
+                                @lang('admin::app.catalog.categories.edit.select-parent-category')
+                            </label>
 
-                        <accordian title="{{ __('admin::app.catalog.categories.parent-category') }}" :active="true">
-                            <div slot="body">
-
-                                {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.parent_category.controls.before', ['category' => $category]) !!}
-
-                                <tree-view value-field="id" name-field="parent_id" input-type="radio" items='@json($categories)' value='@json($category->parent_id)' fallback-locale="{{ config('app.fallback_locale') }}"></tree-view>
-
-                                {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.parent_category.controls.before', ['category' => $category]) !!}
-
+                            {{-- Radio select button --}}
+                            <div class="flex flex-col gap-[12px]">
+                                <x-admin::tree.view
+                                    input-type="radio"
+                                    name-field="parent_id"
+                                    :value="json_encode($category->parent_id)"
+                                    :value-field="json_encode($category->parent_id)"
+                                    :model-value="json_encode($categories)"
+                                    :items="json_encode($categories)"
+                                    :fallback-locale="config('app.fallback_locale')"
+                                >
+                                </x-admin::tree.view>
                             </div>
-                        </accordian>
-
-                        {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.parent_category.after', ['category' => $category]) !!}
+                        </div>
                     @endif
-
-                    <accordian title="{{ __('admin::app.catalog.categories.filterable-attributes') }}" :active="true">
-                        <div slot="body">
-                            @php $selectedaAtributes = old('attributes') ?? $category->filterableAttributes->pluck('id')->toArray() @endphp
-
-                            <div class="control-group multi-select" :class="[errors.has('attributes[]') ? 'has-error' : '']">
-                                <label for="attributes" class="required">{{ __('admin::app.catalog.categories.attributes') }}</label>
-                                <select class="control" name="attributes[]" v-validate="'required'" data-vv-as="&quot;{{ __('admin::app.catalog.categories.attributes') }}&quot;" multiple>
-
-                                    @foreach ($attributes as $attribute)
-                                        <option value="{{ $attribute->id }}" {{ in_array($attribute->id, $selectedaAtributes) ? 'selected' : ''}}>
-                                            {{ $attribute->name ? $attribute->name : $attribute->admin_name }}
-                                        </option>
-                                    @endforeach
-
-                                </select>
-                                <span class="control-error" v-if="errors.has('attributes[]')">
-                                    @{{ errors.first('attributes[]') }}
-                                </span>
-                            </div>
-                        </div>
-                    </accordian>
-
-                    {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.seo.before', ['category' => $category]) !!}
-
-                    <accordian title="{{ __('admin::app.catalog.categories.seo') }}" :active="true">
-                        <div slot="body">
-                            {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.seo.controls.before', ['category' => $category]) !!}
-
-                            <div class="control-group">
-                                <label for="meta_title">{{ __('admin::app.catalog.categories.meta_title') }}
-                                    <span class="locale">[{{ $locale }}]</span>
-                                </label>
-                                <input type="text" class="control" id="meta_title" name="{{$locale}}[meta_title]" value="{{ old($locale)['meta_title'] ?? ($category->translate($locale)['meta_title'] ?? '') }}"/>
-                            </div>
-
-                            <div class="control-group" :class="[errors.has('{{$locale}}[slug]') ? 'has-error' : '']">
-                                <label for="slug" class="required">{{ __('admin::app.catalog.categories.slug') }}
-                                    <span class="locale">[{{ $locale }}]</span>
-                                </label>
-                                <input type="text" v-validate="'required'" class="control" id="slug" name="{{$locale}}[slug]" value="{{ old($locale)['slug'] ?? ($category->translate($locale)['slug'] ?? '') }}" data-vv-as="&quot;{{ __('admin::app.catalog.categories.slug') }}&quot;" v-slugify/>
-                                <span class="control-error" v-if="errors.has('{{$locale}}[slug]')">@{{ errors.first('{!!$locale!!}[slug]') }}</span>
-                            </div>
-
-                            <div class="control-group">
-                                <label for="meta_description">{{ __('admin::app.catalog.categories.meta_description') }}
-                                    <span class="locale">[{{ $locale }}]</span>
-                                </label>
-                                <textarea class="control" id="meta_description" name="{{$locale}}[meta_description]">{{ old($locale)['meta_description'] ?? ($category->translate($locale)['meta_description'] ?? '') }}</textarea>
-                            </div>
-
-                            <div class="control-group">
-                                <label for="meta_keywords">{{ __('admin::app.catalog.categories.meta_keywords') }}
-                                    <span class="locale">[{{ $locale }}]</span>
-                                </label>
-                                <textarea class="control" id="meta_keywords" name="{{$locale}}[meta_keywords]">{{ old($locale)['meta_keywords'] ?? ($category->translate($locale)['meta_keywords'] ?? '') }}</textarea>
-                            </div>
-
-                            {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.seo.controls.after', ['category' => $category]) !!}
-                        </div>
-                    </accordian>
-                    {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.seo.after', ['category' => $category]) !!}
                 </div>
+
+                {!! view_render_event('bagisto.admin.catalog.categories.edit.card.general.after', ['category' => $category]) !!}
+
+                {!! view_render_event('bagisto.admin.catalog.categories.edit.card.description_images.before', ['category' => $category]) !!}
+
+                <!-- Description and images -->
+                <div class="p-[16px] bg-white dark:bg-gray-900 rounded-[4px] box-shadow">
+                    <p class="mb-[16px] text-[16px] text-gray-800 dark:text-white font-semibold">
+                        @lang('admin::app.catalog.categories.edit.description-and-images')
+                    </p>
+
+                    <!-- Description -->
+                    <v-description v-slot="{ isDescriptionRequired }">
+                        <x-admin::form.control-group class="mb-[10px]">
+                            <x-admin::form.control-group.label ::class="{ 'required' : isDescriptionRequired}">
+                                @lang('admin::app.catalog.categories.edit.description')
+                            </x-admin::form.control-group.label>
+        
+                            <x-admin::form.control-group.control
+                                type="textarea"
+                                name="description"
+                                id="description"
+                                class="description"
+                                :value="old($currentLocale->code)['description'] ?? ($category->translate($currentLocale->code)['description'] ?? '')"
+                                ::rules="{ 'required' : isDescriptionRequired}"
+                                :label="trans('admin::app.catalog.categories.edit.description')"
+                                :tinymce="true"
+                            >
+                            </x-admin::form.control-group.control>
+        
+                            <x-admin::form.control-group.error
+                                control-name="description"
+                            >
+                            </x-admin::form.control-group.error>
+                        </x-admin::form.control-group>
+                    </v-description>
+
+                    <div class="flex gap-[50px]">
+                        {{-- Add Logo --}}
+                        <div class="flex flex-col gap-[8px] w-[40%] mt-5">
+                            <p class="text-gray-800 dark:text-white font-medium">
+                                @lang('admin::app.catalog.categories.edit.logo')
+                            </p>
+
+                            <p class="text-[12px] text-gray-500">
+                                @lang('admin::app.catalog.categories.edit.logo-size')
+                            </p>
+
+                            <x-admin::media.images
+                                name="logo_path"
+                                :uploaded-images="$category->logo_path ? [['id' => 'logo_path', 'url' => $category->logo_url]] : []"
+                            >
+                            </x-admin::media.images>
+                        </div>
+
+                        {{-- Add Banner --}}
+                        <div class="flex flex-col gap-[8px] w-[40%] mt-5">
+                            <p class="text-gray-800 dark:text-white font-medium">
+                                @lang('admin::app.catalog.categories.edit.banner')
+                            </p>
+
+                            <p class="text-[12px] text-gray-500">
+                                @lang('admin::app.catalog.categories.edit.banner-size')
+                            </p>
+
+                            <x-admin::media.images
+                                name="banner_path"
+                                :uploaded-images="$category->banner_path ? [['id' => 'banner_path', 'url' => $category->banner_url]] : []"
+                                width="220px"
+                            >
+                            </x-admin::media.images>
+                        </div>
+                    </div>
+                </div>
+
+                {!! view_render_event('bagisto.admin.catalog.categories.edit.card.description_images.after', ['category' => $category]) !!}
+
+                {!! view_render_event('bagisto.admin.catalog.categories.edit.card.seo.before', ['category' => $category]) !!}
+
+                {{-- SEO Deatils --}}
+                <div class="p-[16px] bg-white dark:bg-gray-900 rounded-[4px] box-shadow">
+                    <p class="text-[16px] text-gray-800 dark:text-white font-semibold mb-[16px]">
+                        @lang('admin::app.catalog.categories.edit.seo-details')
+                    </p>
+                    
+                    {{-- SEO Title & Description Blade Componnet --}}
+                    <x-admin::seo/>
+
+                    <div class="mt-[30px]">
+                        {{-- Meta Title --}}
+                        <x-admin::form.control-group class="mb-[10px]">
+                            <x-admin::form.control-group.label>
+                                @lang('admin::app.catalog.categories.edit.meta-title')
+                            </x-admin::form.control-group.label>
+
+                            <x-admin::form.control-group.control
+                                type="text"
+                                name="{{$currentLocale->code}}[meta_title]"
+                                id="meta_title"
+                                :value="old($currentLocale->code)['meta_title'] ?? ($category->translate($currentLocale->code)['meta_title'] ?? '')"
+                                :label="trans('admin::app.catalog.categories.edit.meta-title')"
+                                :placeholder="trans('admin::app.catalog.categories.edit.meta-title')"
+                            >
+                            </x-admin::form.control-group.control>
+                        </x-admin::form.control-group>
+
+                        {{-- Slug --}}
+                        <x-admin::form.control-group class="mb-[10px]">
+                            <x-admin::form.control-group.label class="required">
+                                @lang('admin::app.catalog.categories.edit.slug')
+                            </x-admin::form.control-group.label>
+
+                            <v-field
+                                type="text"
+                                name="{{$currentLocale->code}}[slug]"
+                                value="{{ old($currentLocale->code)['slug'] ?? ($category->translate($currentLocale->code)['slug'] ?? '') }}"
+                                label="{{ trans('admin::app.catalog.categories.edit.slug') }}"
+                                rules="required"
+                                v-slot="{ field }"
+                            >
+                                <input
+                                    type="text"
+                                    name="{{$currentLocale->code}}[slug]"
+                                    id="{{$currentLocale->code}}[slug]"
+                                    v-bind="field"
+                                    :class="[errors['{{$currentLocale->code}}[slug]'] ? 'border border-red-600 hover:border-red-600' : '']"
+                                    class="flex w-full min-h-[39px] py-2 px-3 border rounded-[6px] text-[14px] text-gray-600 dark:text-gray-300 transition-all hover:border-gray-400 dark:hover:border-gray-400 focus:border-gray-400 dark:focus:border-gray-400 dark:bg-gray-900 dark:border-gray-800"
+                                    placeholder="{{ trans('admin::app.catalog.categories.edit.slug') }}"
+                                    v-slugify-target:slug
+                                >
+                            </v-field>
+
+                            <x-admin::form.control-group.error
+                                control-name="{{$currentLocale->code}}[slug]"
+                            >
+                            </x-admin::form.control-group.error>
+                        </x-admin::form.control-group>
+
+                        {{-- Meta Keywords --}}
+                        <x-admin::form.control-group class="mb-[10px]">
+                            <x-admin::form.control-group.label>
+                                @lang('admin::app.catalog.categories.edit.meta-keywords')
+                            </x-admin::form.control-group.label>
+
+                            <x-admin::form.control-group.control
+                                type="text"
+                                name="{{$currentLocale->code}}[meta_keywords]"
+                                :value="old($currentLocale->code)['meta_keywords'] ?? ($category->translate($currentLocale->code)['meta_keywords'] ?? '')"
+                                :label="trans('admin::app.catalog.categories.edit.meta-keywords')"
+                                :placeholder="trans('admin::app.catalog.categories.edit.meta-keywords')"
+                            >
+                            </x-admin::form.control-group.control>
+                        </x-admin::form.control-group>
+
+                        {{-- Meta Description --}}
+                        <x-admin::form.control-group class="mb-[10px]">
+                            <x-admin::form.control-group.label>
+                                @lang('admin::app.catalog.categories.edit.meta-description')
+                            </x-admin::form.control-group.label>
+
+                            <x-admin::form.control-group.control
+                                type="textarea"
+                                name="{{$currentLocale->code}}[meta_description]"
+                                id="meta_description"
+                                :value="old($currentLocale->code)['meta_description'] ?? ($category->translate($currentLocale->code)['meta_description'] ?? '')"
+                                :label="trans('admin::app.catalog.categories.edit.meta-description')"
+                                :placeholder="trans('admin::app.catalog.categories.edit.meta-description')"
+                            >
+                            </x-admin::form.control-group.control>
+                        </x-admin::form.control-group>
+                    </div>
+                </div>
+
+                {!! view_render_event('bagisto.admin.catalog.categories.edit.card.seo.after', ['category' => $category]) !!}
             </div>
-        </form>
-        <div class="page-content">
-            <accordian title="{{ __('admin::app.catalog.categories.products') }}" :active="true">
-                <div slot="body">
-                    {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.products.controls.before', ['category' => $category]) !!}
 
-                    <datagrid-plus src="{{ route('admin.catalog.categories.products', $category->id) }}"></datagrid-plus>
+            {{-- Right Section --}}
+            <div class="flex flex-col gap-[8px] w-[360px] max-w-full">
+                {{-- Settings --}}
 
-                    {!! view_render_event('bagisto.admin.catalog.category.edit_form_accordian.products.controls.before', ['category' => $category]) !!}
-                </div>
-            </accordian>
+                {!! view_render_event('bagisto.admin.catalog.categories.edit.card.accordion.settings.before', ['category' => $category]) !!}
+
+                <x-admin::accordion>
+                    <x-slot:header>
+                        <p class="p-[10px] text-gray-600 dark:text-gray-300 text-[16px] font-semibold">
+                            @lang('admin::app.catalog.categories.edit.settings')
+                        </p>
+                    </x-slot:header>
+
+                    <x-slot:content>
+                        {{-- Position --}}
+                        <div class="mb-[10px]">
+                            <x-admin::form.control-group class="mb-[10px]">
+                                <x-admin::form.control-group.label class="required">
+                                    @lang('admin::app.catalog.categories.edit.position')
+                                </x-admin::form.control-group.label>
+
+                                <x-admin::form.control-group.control
+                                    type="text"
+                                    name="position"
+                                    :value="old('position') ?: $category->position"
+                                    rules="required"
+                                    :label="trans('admin::app.catalog.categories.edit.position')"
+                                    :placeholder="trans('admin::app.catalog.categories.edit.enter-position')"
+                                >
+                                </x-admin::form.control-group.control>
+
+                                <x-admin::form.control-group.error
+                                    control-name="position"
+                                >
+                                </x-admin::form.control-group.error>
+                            </x-admin::form.control-group>
+                        </div>
+
+                        {{-- Display Mode  --}}
+                        <x-admin::form.control-group class="mb-[10px]">
+                            <x-admin::form.control-group.label class="text-gray-800 dark:text-white font-medium required">
+                                @lang('admin::app.catalog.categories.edit.display-mode')
+                            </x-admin::form.control-group.label>
+
+                            @php $selectedValue = old('display_mode') ?? $category->display_mode @endphp
+                            
+                            <x-admin::form.control-group.control
+                                type="select"
+                                name="display_mode"
+                                id="display_mode"
+                                class="cursor-pointer"
+                                rules="required"
+                                :value="$selectedValue"
+                                :label="trans('admin::app.catalog.categories.edit.display-mode')"
+                            >
+                                <option value="products_and_description" {{ $selectedValue == 'products_and_description' ? 'selected' : '' }}>
+                                    @lang('admin::app.catalog.categories.edit.products-and-description') 
+                                </option>
+
+                                <option value="products_only" {{ $selectedValue == 'products_only' ? 'selected' : '' }}>
+                                    @lang('admin::app.catalog.categories.edit.products-only')
+                                </option>
+
+                                <option value="description_only" {{ $selectedValue == 'description_only' ? 'selected' : '' }}>
+                                    @lang('admin::app.catalog.categories.edit.description-only')
+                                </option>
+                            </x-admin::form.control-group.control>
+
+                            <x-admin::form.control-group.error
+                                control-name="display_mode"
+                            >
+                            </x-admin::form.control-group.error>
+                        </x-admin::form.control-group>
+
+                        {{-- Visible in menu --}}
+                        <x-admin::form.control-group>
+                            <x-admin::form.control-group.label class="text-gray-800 dark:text-white font-medium">
+                                @lang('admin::app.catalog.categories.edit.visible-in-menu')
+                            </x-admin::form.control-group.label>
+
+                            @php $selectedValue = old('status') ?: $category->status @endphp
+
+                            <x-admin::form.control-group.control
+                                type="switch"
+                                name="status"
+                                class="cursor-pointer"
+                                value="1"
+                                :label="trans('admin::app.catalog.categories.edit.visible-in-menu')"
+                                :checked="(boolean) $selectedValue"
+                            >
+                            </x-admin::form.control-group.control>
+                        </x-admin::form.control-group>
+                    </x-slot:content>
+                </x-admin::accordion>
+
+                {!! view_render_event('bagisto.admin.catalog.categories.edit.card.accordion.settings.after', ['category' => $category]) !!}
+
+                {!! view_render_event('bagisto.admin.catalog.categories.edit.card.accordion.filterable_attributes.before', ['category' => $category]) !!}
+
+                {{-- Filterable Attributes --}}
+                <x-admin::accordion>
+                    <x-slot:header>
+                        <p class="required text-gray-600 dark:text-gray-300 text-[16px] p-[10px] font-semibold">
+                            @lang('admin::app.catalog.categories.edit.filterable-attributes')
+                        </p>
+                    </x-slot:header>
+
+                    @php $selectedaAtributes = old('attributes') ?: $category->filterableAttributes->pluck('id')->toArray() @endphp
+
+                    <x-slot:content class="pointer-events-none">
+                        @foreach ($attributes as $attribute)
+                            <label
+                                class="flex gap-[10px] w-max items-center p-[6px] cursor-pointer select-none"
+                                for="{{ $attribute->name ?? $attribute->admin_name }}"
+                            >
+                                <x-admin::form.control-group.control
+                                    type="checkbox"
+                                    id="{{ $attribute->name ?? $attribute->admin_name }}"
+                                    for="{{ $attribute->name ?? $attribute->admin_name }}"
+                                    value="{{ $attribute->id }}"
+                                    name="attributes[]"
+                                    rules="required"
+                                    class="hidden peer"
+                                    :checked="in_array($attribute->id, $selectedaAtributes)"
+                                    :label="trans('admin::app.catalog.categories.edit.filterable-attributes')"
+                                >
+                                </x-admin::form.control-group.control>
+
+                                <div class="text-[14px] text-gray-600 dark:text-gray-300 font-semibold cursor-pointer">
+                                    {{ $attribute->name ?? $attribute->admin_name }}
+                                </div>
+                            </label>
+                        @endforeach
+
+                        <x-admin::form.control-group.error
+                            control-name="attributes[]"
+                        >
+                        </x-admin::form.control-group.error>
+                    </x-slot:content>
+                </x-admin::accordion>
+
+                {!! view_render_event('bagisto.admin.catalog.categories.edit.card.accordion.filterable_attributes.after', ['category' => $category]) !!}
+
+            </div>
         </div>
-    </div>
-@stop
 
-@push('scripts')
-    @include('admin::layouts.tinymce')
+        {!! view_render_event('bagisto.admin.catalog.categories.edit.edit_form_controls.after', ['category' => $category]) !!}
 
-    <script type="text/x-template" id="description-template">
-        <div class="control-group" :class="[errors.has('{{$locale}}[description]') ? 'has-error' : '']">
-            <label for="description" :class="isRequired ? 'required' : ''">{{ __('admin::app.catalog.categories.description') }}
-                <span class="locale">[{{ $locale }}]</span>
-            </label>
-            <textarea v-validate="isRequired ? 'required' : ''" class="control" id="description" name="{{$locale}}[description]" data-vv-as="&quot;{{ __('admin::app.catalog.categories.description') }}&quot;">{{ old($locale)['description'] ?? ($category->translate($locale)['description'] ?? '') }}</textarea>
-            <span class="control-error" v-if="errors.has('{{$locale}}[description]')">@{{ errors.first('{!!$locale!!}[description]') }}</span>
-        </div>
-    </script>
+    </x-admin::form>
 
-    <script>
-        Vue.component('description', {
-            template: '#description-template',
+    {!! view_render_event('bagisto.admin.catalog.categories.edit.after') !!}
 
-            inject: ['$validator'],
+    @pushOnce('scripts')
+        <script type="text/x-template" id="v-description-template">
+            <div>
+               <slot :is-description-required="isDescriptionRequired"></slot>
+            </div>
+        </script>
 
-            data: function() {
-                return {
-                    isRequired: true,
-                }
-            },
+        <script type="module">
+            app.component('v-description', {
+                template: '#v-description-template',
 
-            created: function () {
-                let self = this;
+                data() {
+                    return {
+                        isDescriptionRequired: true,
 
-                $(document).ready(function () {
-                    $('#display_mode').on('change', function (e) {
-                        if ($('#display_mode').val() != 'products_only') {
-                            self.isRequired = true;
-                        } else {
-                            self.isRequired = false;
-                        }
-                    })
+                        displayMode: "{{ $category->display_mode }}",
+                    };
+                },
 
-                    if ($('#display_mode').val() != 'products_only') {
-                        self.isRequired = true;
-                    } else {
-                        self.isRequired = false;
-                    }
+                mounted() {
+                    this.isDescriptionRequired = this.displayMode !== 'products_only';
 
-                    tinyMCEHelper.initTinyMCE({
-                        selector: 'textarea#description',
-                        height: 200,
-                        width: "100%",
-                        plugins: 'image imagetools media wordcount save fullscreen code table lists link hr',
-                        toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor link hr | alignleft aligncenter alignright alignjustify | numlist bullist outdent indent  | removeformat | code | table',
+                    this.$nextTick(() => {
+                        document.querySelector('#display_mode').addEventListener('change', (e) => {
+                            this.isDescriptionRequired = e.target.value !== 'products_only';
+                        });
                     });
-                });
-            }
-        });
-    </script>
-@endpush
+                },
+            });
+        </script>
+    @endPushOnce
+
+</x-admin::layouts>

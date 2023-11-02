@@ -2,16 +2,15 @@
 
 namespace Webkul\Core\Providers;
 
-use Illuminate\Contracts\Debug\ExceptionHandler;
-use Illuminate\Foundation\AliasLoader;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\AliasLoader;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Webkul\Core\Core;
+use Webkul\Core\Visitor;
 use Webkul\Core\Exceptions\Handler;
 use Webkul\Core\Facades\Core as CoreFacade;
-use Webkul\Core\Models\SliderProxy;
-use Webkul\Core\Observers\SliderObserver;
 use Webkul\Core\View\Compilers\BladeCompiler;
 use Webkul\Theme\ViewRenderEventManager;
 
@@ -30,20 +29,16 @@ class CoreServiceProvider extends ServiceProvider
 
         $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'core');
 
-        Validator::extend('slug', 'Webkul\Core\Contracts\Validations\Slug@passes');
-
-        Validator::extend('code', 'Webkul\Core\Contracts\Validations\Code@passes');
-
-        Validator::extend('decimal', 'Webkul\Core\Contracts\Validations\Decimal@passes');
-
         $this->publishes([
-            dirname(__DIR__) . '/Config/concord.php' => config_path('concord.php'),
-            dirname(__DIR__) . '/Config/scout.php'   => config_path('scout.php'),
+            dirname(__DIR__) . '/Config/concord.php'    => config_path('concord.php'),
+            dirname(__DIR__) . '/Config/repository.php' => config_path('repository.php'),
+            dirname(__DIR__) . '/Config/scout.php'      => config_path('scout.php'),
+            dirname(__DIR__) . '/Config/visitor.php'      => config_path('visitor.php'),
         ]);
 
-        $this->app->bind(ExceptionHandler::class, Handler::class);
+        $this->app->register(EventServiceProvider::class);
 
-        SliderProxy::observe(SliderObserver::class);
+        $this->app->bind(ExceptionHandler::class, Handler::class);
 
         $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'core');
 
@@ -91,6 +86,15 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton('core', function () {
             return app()->make(Core::class);
         });
+
+        /**
+         * Bind to service container.
+         */
+        $this->app->singleton('shetabit-visitor', function () {
+            $request = app(Request::class);
+
+            return new Visitor($request, config('visitor'));
+        });
     }
 
     /**
@@ -104,9 +108,7 @@ class CoreServiceProvider extends ServiceProvider
             $this->commands([
                 \Webkul\Core\Console\Commands\BagistoPublish::class,
                 \Webkul\Core\Console\Commands\BagistoVersion::class,
-                \Webkul\Core\Console\Commands\Install::class,
                 \Webkul\Core\Console\Commands\ExchangeRateUpdate::class,
-                \Webkul\Core\Console\Commands\BookingCron::class,
                 \Webkul\Core\Console\Commands\InvoiceOverdueCron::class,
             ]);
         }

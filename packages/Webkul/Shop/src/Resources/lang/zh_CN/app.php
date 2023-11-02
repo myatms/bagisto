@@ -1,782 +1,898 @@
 <?php
 
 return [
-    'invalid_vat_format' => '给定的增值税ID格式错误',
-    'security-warning' => '发现可疑活动!!!',
-    'nothing-to-delete' => '没有什么可删除的',
-
-    'layouts' => [
-        'my-account' => '我的帐户',
-        'profile' => '简介',
-        'address' => '地址',
-        'reviews' => '评论',
-        'wishlist' => '愿望清单',
-        'orders' => '订单',
-        'downloadable-products' => '可下载产品'
-    ],
-
-    'common' => [
-        'error' => '发生错误。请稍后再试.',
-        'image-upload-limit' => '图片最大上传大小为2MB',
-        'no-result-found' => '我们找不到任何记录.',
-    ],
-
-    'home' => [
-        'page-title' => config('app.name') . ' - 主页',
-        'featured-products' => '特色产品',
-        'new-products' => '新产品',
-        'verify-email' => '验证您的电子邮件帐户',
-        'resend-verify-email' => '重新发送验证电子邮件'
-    ],
-
-    'header' => [
-        'title' => '帐户',
-        'dropdown-text' => '管理购物车, 订单&愿望清单',
-        'sign-in' => '登入',
-        'sign-up' => '注册',
-        'account' => '帐户',
-        'cart' => '购物车',
-        'profile' => '简介',
-        'wishlist' => '愿望清单',
-        'cart' => '购物车',
-        'logout' => '登出',
-        'search-text' => '在这里搜索产品'
-    ],
-
-    'minicart' => [
-        'view-cart' => '查看购物车',
-        'checkout' => '付款',
-        'cart' => '购物车',
-        'zero' => '0'
-    ],
-
-    'footer' => [
-        'subscribe-newsletter' => '邮件订阅',
-        'subscribe' => '订阅',
-        'locale' => '多语言',
-        'currency' => '货币',
-    ],
-
-    'subscription' => [
-        'unsubscribe' => '取消订阅',
-        'subscribe' => '订阅',
-        'subscribed' => '您现在订阅了电子邮件订阅.',
-        'not-subscribed' => '您无法订阅邮件订阅, 请稍后再试.',
-        'already' => '您已经订阅了我们的订阅列表.',
-        'unsubscribed' => '您已取消订阅邮件订阅.',
-        'already-unsub' => '您已经退订.',
-        'not-subscribed' => '错误! 目前无法发送邮件, 请稍后再试.'
-    ],
-
-    'search' => [
-        'no-results' => '未找到结果',
-        'page-title' => config('app.name') . ' - 搜索',
-        'found-results' => '找到搜索结果',
-        'found-result' => '找到搜索结果',
-        'analysed-keywords' => '已分析关键字',
-        'image-search-option' => '图片搜索选项'
-    ],
-
-    'reviews' => [
-        'title' => '标题',
-        'add-review-page-title' => '添加评论',
-        'write-review' => '写评论',
-        'review-title' => '给你的评论一个标题',
-        'product-review-page-title' => '产品审核',
-        'rating-reviews' => '评级&评论',
-        'submit' => '提交',
-        'delete-all' => '所有评论已经被成功删除',
-        'ratingreviews' => ':rating 评级 & :review 评论',
-        'star' => '星级',
-        'percentage' => ':percentage %',
-        'id-star' => '星',
-        'name' => '名称',
-        'login-to-review' => '请先登录以查看产品',
-    ],
-
-    'customer' => [
-        'compare'           => [
-            'text'                  => '比较',
-            'compare_similar_items' => '比较类似项目',
-            'add-tooltip'           => '将产品添加到比较列表',
-            'added'                 => '项目成功添加到比较列表',
-            'already_added'         => '项目已添加到比较列表',
-            'removed'               => '项目成功从比较列表中删除',
-            'removed-all'           => '从比较列表中删除所有成功的项目',
-            'confirm-remove-all'    => '您确定要删除所有比较项目吗?',
-            'empty-text'            => "您的比较列表中没有任何项目",
-            'product_image'         => '产品图片',
-            'actions'               => '行动',
-        ],
-
-        'signup-text' => [
-            'account_exists' => '已有账号',
-            'title' => '登入'
-        ],
-
-        'signup-form' => [
-            'page-title' => '创建新的客户帐户',
-            'title' => '注册',
-            'firstname' => '名',
-            'lastname' => '姓',
-            'email' => '电子邮件',
-            'password' => '密码',
-            'confirm_pass' => '确认密码',
-            'button_title' => '注册',
-            'agree' => '同意',
-            'terms' => '条款',
-            'conditions' => '条件',
-            'using' => '通过使用本网站',
-            'agreement' => '协议',
-            'subscribe-to-newsletter' => '订阅邮件列表',
-            'success' => '帐户已创建成功.',
-            'success-verify' => '帐户已创建成功, 已发送电子邮件进行验证.',
-            'success-verify-email-unsent' => '帐户已成功, 但验证电子邮件未发送.',
-            'failed' => '错误! 无法创建您的帐户, 请稍后再试.',
-            'already-verified' => '您的帐户已通过验证或请尝试再次发送新的验证电子邮件.',
-            'verification-not-sent' => '错误! 发送验证邮件时出现问题, 请稍后再试.',
-            'verification-sent' => '已发送验证电子邮件',
-            'verified' => '您的帐号已通过验证, 请立即尝试登录.',
-            'verify-failed' => '我们无法验证您的邮件帐户.',
-            'dont-have-account' => '您没有我们的账户.',
-            'customer-registration' => '客户注册成功'
-        ],
-
-        'login-text' => [
-            'no_account' => '没有帐号',
-            'title' => '注册',
-        ],
-
-        'login-form' => [
-            'page-title' => '客户登录',
-            'title' => '登入',
-            'email' => '电子邮件',
-            'password' => '密码',
-            'forgot_pass' => '忘记密码?',
-            'button_title' => '登入',
-            'remember' => '登入',
-            'footer' => '© 版权 :year 网络库 软件, 版权所有',
-            'invalid-creds' => '请检查您的凭据并重试.',
-            'verify-first' => '首先验证您的电子邮件帐户.',
-            'not-activated' => '您的激活需要管理员批准',
-            'resend-verification' => '重新发送验证邮件',
-            'show-password'       => '显示密码',
-        ],
-
+    'customers' => [
         'forgot-password' => [
-            'title' => '恢复密码',
-            'email' => '电子邮件',
-            'submit' => '发送密码重置电子邮件',
-            'page_title' => '忘记密码了吗?'
+            'back'                 => '返回登录？',
+            'email-not-exist'      => '我们找不到使用该电子邮件地址的用户。',
+            'email'                => '电子邮件',
+            'forgot-password-text' => '如果您忘记了密码，请通过输入您的电子邮件地址来找回密码。',
+            'footer'               => '© 版权所有 2010 - :current_year，Webkul Software（注册于印度）。保留所有权利。',
+            'page-title'           => '忘记密码？',
+            'reset-link-sent'      => '我们已将重置密码链接发送到您的电子邮件。',
+            'submit'               => '重置密码',
+            'sign-in-button'       => '登录',
+            'title'                => '找回密码',
         ],
 
         'reset-password' => [
-            'title' => '重置密码',
-            'email' => '注册的电子邮件',
-            'password' => '密码',
+            'back-link-title'  => '返回登录',
             'confirm-password' => '确认密码',
-            'back-link-title' => '回到登入',
-            'submit-btn-title' => '重置密码'
+            'email'            => '注册电子邮件',
+            'footer'           => '© 版权 2010 - :current_year，Webkul Software（注册于印度）。保留所有权利。',
+            'password'         => '密码',
+            'submit-btn-title' => '重设密码',
+            'title'            => '重设密码',
+        ],
+
+        'login-form' => [
+            'button-title'        => '登录',
+            'create-your-account' => '创建您的帐户',
+            'email'               => '电子邮件',
+            'form-login-text'     => '如果您已经有帐户，请使用您的电子邮件登录。',
+            'footer'              => '© 版权 2010 - :current_year，Webkul Software（注册于印度）。保留所有权利。',
+            'forgot-pass'         => '忘记密码？',
+            'invalid-credentials' => '请检查您的凭据并重试。',
+            'not-activated'       => '您的帐户请求已提交，等待管理员批准。',
+            'new-customer'        => '新用户？',
+            'page-title'          => '用户登录',
+            'password'            => '密码',
+            'show-password'       => '显示密码',
+            'title'               => '登录',
+            'verify-first'        => '请先验证您的电子邮件。',
+        ],
+
+        'signup-form' => [
+            'account-exists'              => '已经有账户？',
+            'button-title'                => '注册',
+            'confirm-pass'                => '确认密码',
+            'email'                       => '电子邮件',
+            'first-name'                  => '名字',
+            'footer'                      => '© 版权所有 2010 - :current_year，Webkul Software（注册于印度）。保留所有权利。',
+            'form-signup-text'            => '如果您是我们商店的新用户，我们很高兴有您作为会员。',
+            'last-name'                   => '姓氏',
+            'page-title'                  => '成为用户',
+            'password'                    => '密码',
+            'sign-in-button'              => '登录',
+            'subscribe-to-newsletter'     => '订阅通讯',
+            'success-verify'              => '成功创建账户，已发送验证电子邮件。',
+            'success-verify-email-unsent' => '成功创建账户，但未发送验证电子邮件。',
+            'success'                     => '成功创建账户。',
+            'verified'                    => '您的账户已验证，请尝试登录。',
+            'verify-failed'               => '我们无法验证您的电子邮件帐户。',
+            'verification-not-sent'       => '错误！发送验证电子邮件时出现问题，请稍后再试。',
+            'verification-sent'           => '已发送验证电子邮件',
         ],
 
         'account' => [
-            'dashboard' => '编辑 简介',
-            'menu' => '菜单',
+            'home'      => '主页',
 
-            'general' => [
-                'no' => '不',
-                'yes' => '是的',
+            'profile'   => [
+                'title'                   => '个人资料',
+                'first-name'              => '名字',
+                'last-name'               => '姓氏',
+                'gender'                  => '性别',
+                'dob'                     => '出生日期',
+                'email'                   => '电子邮件',
+                'delete-profile'          => '删除个人资料',
+                'edit-profile'            => '编辑个人资料',
+                'edit'                    => '编辑',
+                'edit-success'            => '成功更新个人资料',
+                'phone'                   => '电话',
+                'current-password'        => '当前密码',
+                'new-password'            => '新密码',
+                'confirm-password'        => '确认密码',
+                'delete-success'          => '成功删除客户',
+                'wrong-password'          => '密码错误！',
+                'delete-failed'           => '删除客户时出现错误。',
+                'order-pending'           => '无法删除客户帐户，因为有未完成或处理中的订单。',
+                'subscribe-to-newsletter' => '订阅通讯',
+                'delete'                  => '删除',
+                'enter-password'          => '输入您的密码',
+                'male'                    => '男性',
+                'female'                  => '女性',
+                'other'                   => '其他',
+                'save'                    => '保存',
+                'unmatch'                 => '旧密码不匹配。',
             ],
 
-            'profile' => [
-                'index' => [
-                    'page-title' => '简介',
-                    'title' => '简介',
-                    'edit' => '编辑',
-                ],
-
-                'edit-success' => '简介已更新成功.',
-                'edit-fail' => '错误! 简介无法更新, 请稍后重试.',
-                'unmatch' => '旧密码不匹配.',
-
-                'fname' => '名',
-                'lname' => '姓',
-                'gender' => '性别',
-                'other' => '其他',
-                'male' => '男性',
-                'female' => '女性',
-                'dob' => '生日日期',
-                'phone' => '电话',
-                'email' => '电子邮件',
-                'opassword' => '旧密码',
-                'password' => '密码',
-                'cpassword' => '确认密码',
-                'submit' => '更新简介',
-
-                'edit-profile' => [
-                    'title' => '编辑简介',
-                    'page-title' => '编辑简介'
-                ]
+            'addresses' => [
+                'title'            => '地址',
+                'edit'             => '编辑',
+                'edit-address'     => '编辑地址',
+                'delete'           => '删除',
+                'set-as-default'   => '设为默认',
+                'add-address'      => '添加地址',
+                'company-name'     => '公司名称',
+                'vat-id'           => '增值税号',
+                'address-1'        => '地址1',
+                'address-2'        => '地址2',
+                'city'             => '城市',
+                'state'            => '州/省',
+                'select-country'   => '选择国家',
+                'country'          => '国家',
+                'default-address'  => '默认地址',
+                'first-name'       => '名字',
+                'last-name'        => '姓氏',
+                'phone'            => '电话',
+                'street-address'   => '街道地址',
+                'post-code'        => '邮政编码',
+                'empty-address'    => '您尚未将地址添加到您的帐户。',
+                'create-success'   => '地址已成功添加。',
+                'edit-success'     => '地址已成功更新。',
+                'default-delete'   => '无法更改默认地址。',
+                'delete-success'   => '地址已成功删除',
+                'save'             => '保存',
+                'security-warning' => '发现可疑活动！',
             ],
 
-            'address' => [
-                'index' => [
-                    'page-title' => '地址',
-                    'title' => '地址',
-                    'add' => '添加地址',
-                    'edit' => '编辑',
-                    'empty' => '您在这里没有任何保存的地址, 请尝试通过单击添加按钮创建它.',
-                    'create' => '创建地址',
-                    'delete' => '删除',
-                    'make-default' => '使默认',
-                    'default' => '默认',
-                    'contact' => '联系',
-                    'confirm-delete' => '你真的要删除这个地址吗?',
-                    'default-delete' => '默认地址不能更改.',
-                    'enter-password' => '输入你的密码.',
+            'orders' => [
+                'title'      => '订单',
+                'order-id'   => '订单号',
+                'order'      => '订单',
+                'order-date' => '订单日期',
+                'total'      => '总计',
+
+                'status'        => [
+                    'title' => '状态',
+
+                    'options' => [
+                        'processing'      => '处理中',
+                        'completed'       => '已完成',
+                        'canceled'        => '已取消',
+                        'closed'          => '已关闭',
+                        'pending'         => '待处理',
+                        'pending-payment' => '待付款',
+                        'fraud'           => '欺诈',
+                    ],
                 ],
 
-                'create' => [
-                    'page-title' => '添加地址',
-                    'company_name' => '公司名',
-                    'first_name' => '名',
-                    'last_name' => '姓',
-                    'vat_id' => '增值税号',
-                    'vat_help_note' => '[注意: 使用带增值税号的国家代码. 例如. INV01234567891]',
-                    'title' => '添加地址',
-                    'street-address' => '街道地址',
-                    'country' => '国家',
-                    'state' => '州',
-                    'select-state' => '选择地区、州或省',
-                    'city' => '城市',
-                    'postcode' => '邮政编码',
-                    'phone' => '电话',
-                    'submit' => '保存地址',
-                    'success' => '地址已经被成功添加.',
-                    'error' => '地址不能被添加.'
-                ],
-
-                'edit' => [
-                    'page-title' => '编辑地址',
-                    'company_name' => '公司名',
-                    'first_name' => '名',
-                    'last_name' => '姓',
-                    'vat_id' => '增值税号',
-                    'title' => '编辑地址',
-                    'street-address' => '街道地址',
-                    'submit' => '保存地址',
-                    'success' => '地址已更新成功.',
-                ],
-
-                'delete' => [
-                    'success' => '地址成功删除',
-                    'failure' => '地址无法删除',
-                    'wrong-password' => '错误密码 !'
-                ],
-
-                'default-address' => '默认地址',
-            ],
-
-            'order' => [
-                'index' => [
-                    'page-title' => '订单',
-                    'title' => '订单',
-                    'order_id' => '订单ID',
-                    'date' => '日期',
-                    'status' => '状态',
-                    'total' => '总计',
-                    'order_number' => '订单号',
-                    'processing' => '处理中',
-                    'completed' => '已完成',
-                    'canceled' => '取消',
-                    'closed' => '关闭',
-                    'pending' => '待批准',
-                    'pending-payment' => '待批准支付',
-                    'fraud' => '欺诈'
-                ],
+                'action'      => '操作',
+                'empty-order' => '您尚未订购任何产品',
 
                 'view' => [
-                    'page-tile' => '订单 #:order_id',
-                    'info' => '信息',
-                    'placed-on' => '放在',
-                    'products-ordered' => '产品已订购',
-                    'invoices' => '发票',
-                    'shipments' => '出货量',
-                    'SKU' => 'SKU',
-                    'product-name' => '名称',
-                    'qty' => '数量',
-                    'item-status' => '项目状态',
-                    'item-ordered' => '已订购 (:qty_ordered)',
-                    'item-invoice' => '已开票 (:qty_invoiced)',
-                    'item-shipped' => '已快递 (:qty_shipped)',
-                    'item-canceled' => '取消 (:qty_canceled)',
-                    'item-refunded' => '已退款 (:qty_refunded)',
-                    'price' => '价格',
-                    'total' => '总计',
-                    'subtotal' => '小计',
-                    'shipping-handling' => '快递&处理',
-                    'tax' => '税',
-                    'discount' => '折扣',
-                    'tax-percent' => '税百分比',
-                    'tax-amount' => '税金额',
-                    'discount-amount' => '折扣金额',
-                    'grand-total' => '累计',
-                    'total-paid' => '总计已支付',
-                    'total-refunded' => '总计已退款',
-                    'total-due' => '总计到期的',
-                    'shipping-address' => '快递地址',
-                    'billing-address' => '账单地址',
-                    'shipping-method' => '快递方式',
-                    'payment-method' => '支付方式',
-                    'individual-invoice' => '发票 #:invoice_id',
-                    'individual-shipment' => '快递 #:shipment_id',
-                    'print' => '打印',
-                    'invoice-id' => '发票Id',
-                    'order-id' => '订单Id',
-                    'order-date' => '订单日期',
-                    'invoice-date' => '发票日期',
-                    'payment-terms' => '支付协议',
-                    'bill-to' => '记账到',
-                    'ship-to' => '运输到',
-                    'contact' => '联系',
-                    'refunds' => '退款',
-                    'individual-refund' => '退款 #:refund_id',
-                    'adjustment-refund' => '调整退款',
-                    'adjustment-fee' => '调整费',
-                    'cancel-btn-title' => '取消',
-                    'tracking-number' => '追踪号码',
-                    'cancel-confirm-msg' => '您确定要取消此订单吗?'
-                ]
+                    'title'              => '查看',
+                    'page-title'         => '订单 #:order_id',
+                    'total'              => '总计',
+                    'shipping-address'   => '送货地址',
+                    'billing-address'    => '账单地址',
+                    'shipping-method'    => '送货方式',
+                    'payment-method'     => '付款方式',
+                    'cancel-btn-title'   => '取消',
+                    'cancel-confirm-msg' => '您确定要取消此订单吗？',
+                    'cancel-success'     => '您的订单已取消',
+                    'cancel-error'       => '无法取消您的订单',
+
+                    'information' => [
+                        'info'              => '信息',
+                        'placed-on'         => '下单时间',
+                        'sku'               => 'SKU',
+                        'product-name'      => '产品名称',
+                        'price'             => '价格',
+                        'item-status'       => '商品状态',
+                        'subtotal'          => '小计',
+                        'tax-percent'       => '税率',
+                        'tax-amount'        => '税额',
+                        'tax'               => '税金',
+                        'grand-total'       => '总金额',
+                        'item-ordered'      => '已订购 (:qty_ordered)',
+                        'item-invoice'      => '已开票 (:qty_invoiced)',
+                        'item-shipped'      => '已发货 (:qty_shipped)',
+                        'item-canceled'     => '已取消 (:qty_canceled)',
+                        'item-refunded'     => '已退款 (:qty_refunded)',
+                        'shipping-handling' => '运输与处理',
+                        'discount'          => '折扣',
+                        'total-paid'        => '总付款',
+                        'total-refunded'    => '总退款',
+                        'total-due'         => '总待付款',
+                    ],
+
+                    'invoices'  => [
+                        'invoices'           => '发票',
+                        'individual-invoice' => '发票 #:invoice_id',
+                        'sku'                => '存貨單位',
+                        'product-name'       => '产品名称',
+                        'price'              => '价格',
+                        'products-ordered'   => '订购的产品',
+                        'qty'                => '数量',
+                        'subtotal'           => '小计',
+                        'tax-amount'         => '税额',
+                        'grand-total'        => '总金额',
+                        'shipping-handling'  => '运输与处理',
+                        'discount'           => '折扣',
+                        'tax'                => '税金',
+                        'print'              => '打印',
+                    ],
+
+                    'shipments' => [
+                        'shipments'           => '发货',
+                        'tracking-number'     => '跟踪编号',
+                        'individual-shipment' => '发货 #:shipment_id',
+                        'sku'                 => 'SKU',
+                        'product-name'        => '产品名称',
+                        'qty'                 => '数量',
+                        'subtotal'            => '小计',
+                    ],
+
+                    'refunds'  => [
+                        'refunds'           => '退款',
+                        'individual-refund' => '退款 #:refund_id',
+                        'sku'               => 'SKU',
+                        'product-name'      => '产品名称',
+                        'price'             => '价格',
+                        'qty'               => '数量',
+                        'tax-amount'        => '税额',
+                        'subtotal'          => '小计',
+                        'grand-total'       => '总金额',
+                        'no-result-found'   => '未找到任何记录',
+                        'shipping-handling' => '运输与处理',
+                        'discount'          => '折扣',
+                        'tax'               => '税金',
+                        'adjustment-refund' => '调整退款',
+                        'adjustment-fee'    => '调整费用',
+                    ],
+                ],
+
+                'invoice-pdf' => [
+                    'bank-details'      => '银行信息',
+                    'bill-to'           => '账单给',
+                    'contact'           => '联系方式',
+                    'contact-number'    => '联系电话',
+                    'date'              => '发票日期',
+                    'discount'          => '折扣',
+                    'grand-total'       => '总计',
+                    'invoice'           => '发票',
+                    'invoice-id'        => '发票编号',
+                    'order-date'        => '订单日期',
+                    'order-id'          => '订单编号',
+                    'payment-method'    => '付款方式',
+                    'payment-terms'     => '付款条款',
+                    'price'             => '价格',
+                    'product-name'      => '产品名称',
+                    'qty'               => '数量',
+                    'ship-to'           => '发货至',
+                    'shipping-handling' => '运输和处理',
+                    'shipping-method'   => '发货方式',
+                    'sku'               => '存货单位',
+                    'subtotal'          => '小计',
+                    'tax'               => '税',
+                    'tax-amount'        => '税额',
+                    'vat-number'        => 'VAT号码',
+                ],
+            ],
+
+            'reviews' => [
+                'title'        => '评价',
+                'empty-review' => '您还没有对任何商品进行评价',
+            ],
+
+            'downloadable-products' => [
+                'name'                => '可下载商品',
+                'orderId'             => '订单ID',
+                'title'               => '名称',
+                'date'                => '日期',
+                'status'              => '状态',
+                'remaining-downloads' => '剩余下载次数',
+                'records-found'       => '找到记录',
+                'empty-product'       => '您没有可下载的商品',
+                'download-error'      => '下载链接已过期。',
+                'payment-error'       => '该下载商品尚未付款。',
             ],
 
             'wishlist' => [
-                'page-title' => '愿望清单',
-                'title' => '愿望清单',
-                'deleteall' => '删除全部',
-                'confirm-delete-all'   => '您确定要删除所有愿望清单吗?',
-                'moveall' => '将所有产品移至购物车',
-                'move-to-cart' => '移至购物车',
-                'error' => '由于未知问题, 无法将产品添加到愿望清单, 请稍后再查看',
-                'add' => '项目成功添加到愿望清单',
-                'remove' => '项目成功从愿望清单中删除',
-                'add-wishlist-text'     => '将产品添加到愿望清单',
-                'remove-wishlist-text'  => '从愿望清单中删除产品',
-                'moved' => '项目成功移动到购物车',
-                'option-missing' => '缺少产品选项, 因此无法将项目移至愿望清单.',
-                'move-error' => '商品无法移至愿望清单, 请稍后再试',
-                'success' => '项目成功添加到愿望清单',
-                'failure' => '项目无法添加到愿望清单, 请稍后再试',
-                'already' => '您的愿望清单中已经存在的项目',
-                'removed' => '项目成功从愿望清单中删除',
-                'remove-fail' => '项目无法从愿望清单中删除, 请稍后再试',
-                'empty' => '您的愿望清单中没有任何商品',
-                'remove-all-success' => '您的愿望清单中的所有项目已被删除',
-                'save'                 => '保存',
-                'share'                => '分享',
-                'share-wishlist'       => '分享愿望清单',
-                'wishlist-sharing'     => '愿望清单分享',
-                'shared-link'          => '已共享链接',
-                'copy'                 => '复制',
-                'visibility'           => '可见度',
-                'public'               => '公开的',
-                'private'              => '私有的',
-                'enable'               => '启用',
-                'disable'              => '禁用',
-                'customer-name'        => ':name 的共享愿望清单',
-                'enable-wishlist-info' => '启用愿望清单共享以获取链接.',
-                'update-message'       => '已成功更新共享心愿单设置',
+                'color'              => '颜色',
+                'delete-all'         => '全部删除',
+                'empty'              => '愿望清单中没有任何商品。',
+                'move-to-cart'       => '移到购物车',
+                'moved-success'      => '商品成功移入購物車',
+                'moved'              => '商品已成功移至购物车',
+                'page-title'         => '愿望清单',
+                'profile'            => '个人资料',
+                'product-removed'    => '该商品已不再可用，因为管理员已将其删除',
+                'remove'             => '移除',
+                'removed'            => '商品已成功从愿望清单中移除',
+                'remove-fail'        => '商品无法从愿望清单中移除',
+                'remove-all-success' => '已成功从愿望清单中删除所有商品',
+                'success'            => '商品成功添加到愿望清单',
+                'see-details'        => '查看详情',
+                'title'              => '愿望清单',
+            ],
+        ],
+    ],
+
+    'components' => [
+        'accordion' => [
+            'default-content' => '默认内容',
+            'default-header'  => '默认标题',
+        ],
+
+        'drawer' => [
+            'default-toggle'  => '默认切换',
+        ],
+
+        'media' => [
+            'add-attachments' => '添加附件',
+        ],
+
+        'layouts' => [
+            'header' => [
+                'account'       => '账户',
+                'compare'       => '比较',
+                'cart'          => '购物车',
+                'dropdown-text' => '管理购物车、订单和心愿单',
+                'logout'        => '登出',
+                'orders'        => '订单',
+                'profile'       => '个人资料',
+                'sign-in'       => '登录',
+                'sign-up'       => '注册',
+                'search-text'   => '在此搜索产品',
+                'search'        => '搜索',
+                'title'         => '账户',
+                'welcome'       => '欢迎',
+                'welcome-guest' => '欢迎访客',
+                'wishlist'      => '心愿单',
             ],
 
-            'downloadable_products' => [
-                'title' => '可下载产品',
-                'order-id' => '订单ID',
-                'date' => '日期',
-                'name' => '标题',
-                'status' => '状态',
-                'pending' => '待批准',
-                'available' => '可用的',
-                'expired' => '已到期',
-                'remaining-downloads' => '剩余下载',
-                'unlimited' => '无限',
-                'download-error' => '下载链接已过期.',
-                'payment-error' => '此下载尚未付款.'
+            'footer' => [
+                'about-us'               => '关于我们',
+                'customer-service'       => '客户服务',
+                'contact-us'             => '联系我们',
+                'currency'               => '货币',
+                'footer-text'            => '© 版权所有 2010 - 2023，Webkul Software（印度注册）。 保留所有权利。',
+                'locale'                 => '语言',
+                'newsletter-text'        => '准备好我们有趣的新闻通讯！',
+                'order-return'           => '订单和退货',
+                'payment-policy'         => '付款政策',
+                'privacy-cookies-policy' => '隐私和 Cookie 政策',
+                'subscribe-stay-touch'   => '订阅以保持联系。',
+                'subscribe-newsletter'   => '订阅新闻通讯',
+                'subscribe'              => '订阅',
+                'shipping-policy'        => '运输政策',
+                'whats-new'              => '新消息',
+            ],
+        ],
+
+        'datagrid' => [
+            'toolbar' => [
+                'mass-actions' => [
+                    'select-action' => '选择操作',
+                    'select-option' => '选择选项',
+                    'submit'        => '提交',
+                ],
+
+                'filter' => [
+                    'title' => '筛选',
+                ],
+
+                'search' => [
+                    'title' => '搜索',
+                ],
             ],
 
-            'review' => [
-                'index' => [
-                    'title' => '评论',
-                    'page-title' => '评论',
+            'filters' => [
+                'title' => '应用筛选',
 
+                'dropdown' => [
+                    'searchable' => [
+                        'atleast-two-chars' => '至少输入 2 个字符...',
+                        'no-results'        => '未找到结果...',
+                    ],
                 ],
 
-                'view' => [
-                    'page-tile' => '评论 #:id',
+                'custom-filters' => [
+                    'clear-all' => '清除所有',
+                    'title'     => '自定义筛选',
                 ],
 
-                'delete' => [
-                    'confirmation-message' => '您确定要删除此评论吗?',
+                'date-options' => [
+                    'last-six-months'   => '过去 6 个月',
+                    'last-month'        => '上个月',
+                    'last-three-months' => '过去 3 个月',
+                    'today'             => '今天',
+                    'this-week'         => '本周',
+                    'this-month'        => '本月',
+                    'this-year'         => '今年',
+                    'yesterday'         => '昨天',
                 ],
+            ],
 
-                'delete-all' => [
-                    'title' => '全部删除',
-                    'confirmation-message' => '您确定要删除所有评论吗?',
-                ],
-            ]
-        ]
+            'table' => [
+                'actions'              => '操作',
+                'no-records-available' => '没有可用记录。',
+            ],
+        ],
+
+        'modal' => [
+            'default-content' => '默认内容',
+            'default-header'  => '默认标题',
+
+            'confirm' => [
+                'agree-btn'    => '同意',
+                'disagree-btn' => '不同意',
+                'message'      => '您确定要执行此操作吗？',
+                'title'        => '您确定吗？',
+            ],
+        ],
+
+        'products' => [
+            'card' => [
+                'add-to-compare'     => '成功添加到比较列表。',
+                'already-in-compare' => '该项目已添加到比较列表。',
+                'add-to-cart'        => '加入购物车',
+                'new'                => '新',
+                'review-description' => '成为第一个评论此产品的人',
+                'sale'               => '折扣',
+            ],
+
+            'carousel' => [
+                'view-all' => '查看全部',
+            ],
+        ],
+
+        'range-slider' => [
+            'range' => '范围：',
+        ],
     ],
 
     'products' => [
-        'layered-nav-title' => '购物方式',
-        'price-label' => '低至',
-        'remove-filter-link-title' => '全部清除',
-        'filter-to' => '到',
-        'sort-by' => '排序方式',
-        'from-a-z' => '从A到Z',
-        'from-z-a' => '从Z到A',
-        'newest-first' => '新的优先',
-        'oldest-first' => '旧的优先',
-        'cheapest-first' => '便宜优先',
-        'expensive-first' => '贵的优先',
-        'show' => '展示',
-        'pager-info' => '显示 :showing 的 :total 项目',
-        'description' => '描述',
-        'specification' => '规格',
-        'total-reviews' => ':total 评论',
-        'total-rating' => ':total_rating 评级 & :total_reviews 评论',
-        'by' => '由 :name',
-        'up-sell-title' => '我们找到了您可能喜欢的其他产品!',
-        'related-product-title' => '相关产品',
-        'cross-sell-title' => '更多选择',
-        'reviews-title' => '评级&评论',
-        'write-review-btn' => '撰写评论',
-        'choose-option' => '选择一个选项',
-        'sale' => '销售',
-        'new' => '新',
-        'empty' => '此类别中没有可用的产品',
-        'add-to-cart' => '添加到购物车',
-        'book-now' => '现在预订',
-        'buy-now' => '立即购买',
-        'whoops' => '哎呀!',
-        'quantity' => '数量',
-        'in-stock' => '有现货',
-        'out-of-stock' => '缺货',
-        'view-all' => '查看全部',
-        'select-above-options' => '请先选择以上选项.',
-        'less-quantity' => '数量不能小于一个.',
-        'samples' => '样品',
-        'links' => '链接',
-        'sample' => '样本',
-        'name' => '名称',
-        'qty' => '数量',
-        'starting-at' => '开始于',
-        'customize-options' => '自定义选项',
-        'choose-selection' => '选择一个选项',
-        'your-customization' => '您的定制',
-        'total-amount' => '总计数量',
-        'none' => '没有任何',
-        'available-for-order' => '可订购',
-        'settings' => '设置',
-        'compare_options' => '比较选项',
-        'wishlist-options' => '愿望清单选项',
-        'offers' => '购买 :qty 为了 :price 每个和保存 :discount%',
-        'tax-inclusive' => '包括所有税费'
+        'prices' => [
+            'grouped' => [
+                'starting-at' => '起价',
+            ],
+
+            'configurable' => [
+                'as-low-as' => '低至',
+            ],
+        ],
+
+        'sort-by' => [
+            'title'   => '排序方式',
+            'options' => [
+                'cheapest-first'  => '最便宜的优先',
+                'expensive-first' => '最贵的优先',
+                'from-a-z'        => 'A 到 Z',
+                'from-z-a'        => 'Z 到 A',
+                'latest-first'    => '最新的优先',
+                'oldest-first'    => '最旧的优先',
+            ],
+        ],
+
+        'view' => [
+            'type' => [
+                'configurable' => [
+                    'select-options'       => '请选择一个选项',
+                    'select-above-options' => '请选择以上选项',
+                ],
+
+                'bundle' => [
+                    'none' => '无',
+                ],
+
+                'downloadable' => [
+                    'links'   => '链接',
+                    'sample'  => '样品',
+                    'samples' => '样品',
+                ],
+
+                'grouped' => [
+                    'name' => '名称',
+                ],
+            ],
+
+            'gallery' => [
+                'product-image'   => '产品图片',
+                'thumbnail-image' => '缩略图',
+            ],
+
+            'reviews' => [
+                'attachments'      => '附件',
+                'comment'          => '评论',
+                'customer-review'  => '客户评论',
+                'cancel'           => '取消',
+                'empty-review'     => '未找到评论，成为第一个评论此产品的人',
+                'failed-to-upload' => '图片上传失败',
+                'load-more'        => '加载更多',
+                'name'             => '名称',
+                'rating'           => '评分',
+                'success'          => '评论成功提交。',
+                'submit-review'    => '提交评论',
+                'title'            => '标题',
+                'write-a-review'   => '写评论',
+            ],
+
+            'add-to-cart'            => '加入购物车',
+            'add-to-compare'         => '已添加到比较。',
+            'already-in-compare'     => '产品已经添加到比较列表中。',
+            'additional-information' => '附加信息',
+            'buy-now'                => '立即购买',
+            'compare'                => '比较',
+            'description'            => '描述',
+            'review'                 => '评论',
+            'related-product-title'  => '相关产品',
+            'tax-inclusive'          => '含税',
+            'up-sell-title'          => '我们发现您可能喜欢的其他产品！',
+        ],
+
+        'type' => [
+            'abstract' => [
+                'offers' => '购买 :qty 件，每件 :price，节省 :discount%',
+            ],
+        ],
     ],
 
-    'buynow' => [
-        'no-options' => '购买此产品前请选择选项.'
+    'categories' => [
+        'filters' => [
+            'clear-all' => '清除所有',
+            'filters'   => '筛选条件：',
+            'filter'    => '筛选',
+            'sort'      => '排序',
+        ],
+
+        'toolbar' => [
+            'show' => '显示',
+        ],
+
+        'view' => [
+            'empty'     => '此类别中没有可用产品',
+            'load-more' => '加载更多',
+        ],
+    ],
+
+    'search' => [
+        'title' => '搜索结果：:query',
+
+        'images' => [
+            'index' => [
+                'something-went-wrong' => '出了点问题，请稍后重试。',
+                'size-limit-error'     => '尺寸限制错误',
+                'only-images-allowed'  => '仅允许图片（.jpeg、.jpg、.png 等）。',
+            ],
+
+            'results' => [
+                'analysed-keywords' => '分析关键字：',
+            ],
+        ],
+    ],
+
+    'compare' => [
+        'already-added'      => '产品已经添加到比较列表中',
+        'delete-all'         => '删除所有',
+        'empty-text'         => '您的比较列表中没有任何项目',
+        'item-add-success'   => '产品成功添加到比较列表。',
+        'product-compare'    => '产品比较',
+        'remove-success'     => '项目已成功移除。',
+        'remove-all-success' => '所有项目已成功移除。',
+        'remove-error'       => '出了点问题，请稍后再试。',
+        'title'              => '产品比较',
     ],
 
     'checkout' => [
+        'success' => [
+            'info'          => '我们将通过电子邮件发送您的订单详细信息和跟踪信息',
+            'order-id-info' => '您的订单号码是：#:order_id',
+            'title'         => '订单已成功下达',
+            'thanks'        => '感谢您的订单！',
+        ],
+
         'cart' => [
-            'integrity' => [
-                'missing_fields' => '此产品缺少一些必填字段.',
-                'missing_options' => '此产品缺少选项.',
-                'missing_links' => '此产品缺少可下载链接.',
-                'qty_missing' => '至少一种产品的数量应超过 1 个.',
-                'qty_impossible' => '不能将这些产品中的一种以上添加到购物车.',
-                'select_hourly_duration' => '選擇一小時的時隙持續時間。',
-            ],
-            'create-error' => '制作购物车实例时遇到一些问题.',
-            'title' => '购物车',
-            'empty' => '你的购物车是空的',
-            'update-cart' => '更新购物车',
-            'continue-shopping' => '继续购物',
-            'proceed-to-checkout' => '进行结算',
-            'remove' => '移除',
-            'remove-link' => '删除链接',
-            'remove-all-items'          => '删除所有项目',
-            'confirm-action'           => '确认此操作？',
-            'move-to-wishlist' => '移动到愿望清单',
-            'move-to-wishlist-success' => '项目已成功移至愿望清单.',
-            'move-to-wishlist-error' => '无法将商品移至愿望清单, 请稍后再试.',
-            'add-config-warning' => '加入购物车前请选择选项.',
-            'quantity' => [
-                'quantity' => '数量',
-                'success' => '购物车项目成功更新.',
-                'illegal' => '数量不能小于一.',
-                'inventory_warning' => '请求的数量不可用, 请稍后再试.',
-                'error' => '暂时无法更新项目, 请稍后再试.'
+            'continue-to-checkout'      => '继续结帐',
+            'item-add-to-cart'          => '已成功添加项目',
+            'inventory-warning'         => '请求的数量不可用，请稍后再试。',
+            'illegal'                   => '数量不能少于一。',
+            'inactive'                  => '该项目已停用，随后从购物车中移除。',
+            'missing-fields'            => '此产品缺少一些必填字段。',
+            'missing-options'           => '此产品缺少选项。',
+            'missing-links'             => '此产品缺少可下载链接。',
+            'minimum-order-message'     => '最低订单金额为 :amount',
+            'qty-missing'               => '至少有一个产品应该有超过 1 个数量。',
+            'return-to-shop'            => '返回商店',
+            'rule-applied'              => '购物车规则已应用',
+            'suspended-account-message' => '您的帐户已被暂停。',
+            'select-hourly-duration'    => '选择一小时的时段。',
+            'success-remove'            => '项目已成功从购物车中移除。',
+
+            'index'                     => [
+                'cart'                     => '购物车',
+                'continue-shopping'        => '继续购物',
+                'empty-product'            => '您的购物车中没有产品。',
+                'home'                     => '首页',
+                'items-selected'           => ':count 个已选择的项目',
+                'move-to-wishlist-success' => '已成功将选定的项目移至心愿单。',
+                'move-to-wishlist'         => '移至心愿单',
+                'product-name'             => '产品名称',
+                'price'                    => '价格',
+                'quantity'                 => '数量',
+                'quantity-update'          => '数量已成功更新',
+                'remove'                   => '删除',
+                'remove-selected-success'  => '已成功从购物车中删除选定的项目。',
+                'see-details'              => '查看详情',
+                'tax'                      => '税',
+                'total'                    => '总计',
+                'update-cart'              => '更新购物车',
+                'view-cart'                => '查看购物车',
             ],
 
-            'item' => [
-                'error_remove' => '没有要从购物车中删除的物品.',
-                'success' => '商品已成功添加到购物车.',
-                'success-remove' => '物品已成功从购物车中移除.',
-                'success-all-remove' => '所有商品均已成功从购物车中移除。',
-                'error-add' => '商品无法加入购物车, 请稍后再试.',
-                'inactive' => '商品处于非活动状态并已从购物车中移除.',
-                'inactive-add' => '不活跃商品无法添加到购物车.',
+            'coupon' => [
+                'applied'         => '已应用优惠券',
+                'apply'           => '应用优惠券',
+                'apply-issue'     => '无法应用优惠券码。',
+                'already-applied' => '优惠券码已应用。',
+                'button-title'    => '应用',
+                'code'            => '优惠券码',
+                'discount'        => '优惠券折扣',
+                'error'           => '出了点问题',
+                'enter-your-code' => '输入您的代码',
+                'invalid'         => '优惠券码无效。',
+                'remove'          => '删除优惠券',
+                'success-apply'   => '优惠券码已成功应用。',
+                'subtotal'        => '小计',
             ],
-            'quantity-error' => '请求的数量不可用.',
-            'cart-subtotal' => '购物车小计',
-            'cart-remove-action' => '你真的想这样做吗?',
-            'partial-cart-update' => '仅更新了部分产品',
-            'link-missing' => '',
-            'event' => [
-                'expired' => '此活动已过期.'
+
+            'mini-cart' => [
+                'continue-to-checkout' => '继续结帐',
+                'empty-cart'           => '您的购物车是空的',
+                'offer-on-orders'      => '首次下单立减30%',
+                'remove'               => '删除',
+                'see-details'          => '查看详情',
+                'shopping-cart'        => '购物车',
+                'subtotal'             => '小计',
+                'view-cart'            => '查看购物车',
             ],
-            'minimum-order-message'     => '最低订购金额为 :amount',
-            'suspended-account-message' => '您的帐户已被暂停.',
-            'inactive-account-message' =>  '您的帐户一直处于非活动状态',
-            'check-shipping-address'    => '请检查收货地址.',
-            'check-billing-address'     => '请检查帐单地址.',
-            'specify-shipping-method'   => '请指定送货方式.',
-            'specify-payment-method'    => '请指定付款方式.',
-            'rule-applied'              => '已应用购物车规则',
-            'paypal-payment-canceled'   => 'Paypal 付款已被取消。',
+
+            'summary' => [
+                'cart-summary'        => '购物车摘要',
+                'delivery-charges'    => '运费',
+                'discount-amount'     => '折扣金额',
+                'grand-total'         => '总计',
+                'place-order'         => '下订单',
+                'proceed-to-checkout' => '继续结帐',
+                'sub-total'           => '小计',
+                'tax'                 => '税',
+            ],
         ],
 
         'onepage' => [
-            'title' => '付款',
-            'information' => '信息',
-            'shipping' => '快递',
-            'payment' => '支付',
-            'complete' => '完成',
-            'review' => '评论',
-            'billing-address' => '账单地址',
-            'sign-in' => '登入',
-            'company-name' => '公司名',
-            'first-name' => '名',
-            'last-name' => '姓',
-            'email' => '电子邮件',
-            'address1' => '街道地址',
-            'city' => '城市',
-            'state' => '州',
-            'select-state' => '选择地区、州或省',
-            'postcode' => '邮政编码',
-            'phone' => '电话',
-            'country' => '国家',
-            'order-summary' => '订单摘要',
-            'shipping-address' => '快递地址',
-            'use_for_shipping' => '运输到这个地址',
-            'continue' => '继续',
-            'shipping-method' => '选择快递方式',
-            'payment-methods' => '选择支付方式',
-            'payment-method' => '支付方式',
-            'summary' => '订单摘要',
-            'price' => '价格',
-            'quantity' => '数量',
-            'billing-address' => '账单地址',
-            'shipping-address' => '快递地址',
-            'contact' => '联系',
-            'place-order' => '下订单',
-            'new-address' => '添加新的地址',
-            'save_as_address' => '保存这个地址',
-            'apply-coupon' => '申请优惠券',
-            'amt-payable' => '数量应付',
-            'got' => '拿到',
-            'free' => '免费',
-            'coupon-used' => '使用的优惠券',
-            'applied' => '应用',
-            'back' => '后退',
-            'cash-desc' => '货到付款',
-            'money-desc' => '汇款',
-            'paypal-desc' => 'Paypal标准',
-            'free-desc' => '这是免费送货',
-            'flat-desc' => '这是统一费率',
-            'password' => '密码',
-            'login-exist-message' => '您已经有我们的帐户, 请登录或以访客身份继续.',
-            'enter-coupon-code' => '输入优惠码'
-        ],
+            'addresses' => [
+                'billing' => [
+                    'add-new-address'      => '添加新地址',
+                    'billing-address'      => '账单地址',
+                    'back'                 => '返回',
+                    'company-name'         => '公司名称',
+                    'country'              => '国家',
+                    'city'                 => '城市',
+                    'confirm'              => '确认',
+                    'email'                => '电子邮件',
+                    'first-name'           => '名字',
+                    'last-name'            => '姓氏',
+                    'postcode'             => '邮政编码',
+                    'same-billing-address' => '地址与我的账单地址相同',
+                    'street-address'       => '街道地址',
+                    'state'                => '州',
+                    'select-state'         => '选择状态',
+                    'save-address'         => '保存此地址',
+                    'telephone'            => '电话',
+                ],
 
-        'total' => [
-            'order-summary' => '订单摘要',
-            'sub-total' => '项目',
-            'grand-total' => '累计',
-            'delivery-charges' => '送货费',
-            'tax' => '税',
-            'discount' => '折扣',
-            'price' => '价格',
-            'disc-amount' => '数量打折',
-            'new-grand-total' => '新累计',
-            'coupon' => '优惠券',
-            'coupon-applied' => '应用的优惠券',
-            'remove-coupon' => '移除优惠券',
-            'cannot-apply-coupon' => '不能应用优惠券',
-            'invalid-coupon' => '优惠券代码无效.',
-            'success-coupon' => '优惠券代码已应用成功.',
-            'coupon-apply-issue' => '优惠券代码不能被应用.',
-            'coupon-already-applied' => '優惠券代碼已應用',
-        ],
+                'index' => [
+                    'confirm' => '确认',
+                ],
 
-        'success' => [
-            'title' => '已成功下单',
-            'thanks' => '谢谢您的订单!',
-            'order-id-info' => '您的订单编号是 #:order_id',
-            'info' => '我们将通过电子邮件向您发送您的订单详细信息和跟踪信息.'
-        ]
+                'shipping' => [
+                    'add-new-address'  => '添加新地址',
+                    'back'             => '返回',
+                    'company-name'     => '公司名称',
+                    'country'          => '国家',
+                    'city'             => '城市',
+                    'confirm'          => '确认',
+                    'email'            => '电子邮件',
+                    'first-name'       => '名字',
+                    'last-name'        => '姓氏',
+                    'postcode'         => '邮政编码',
+                    'street-address'   => '街道地址',
+                    'state'            => '州',
+                    'select-state'     => '选择州',
+                    'select-country'   => '选择国家',
+                    'save-address'     => '保存此地址',
+                    'shipping-address' => '送货地址',
+                    'telephone'        => '电话',
+                ],
+            ],
+
+            'coupon' => [
+                'applied'         => '优惠券已应用',
+                'applied-coupon'  => '应用的优惠券',
+                'apply'           => '应用优惠券',
+                'apply-issue'     => '无法应用优惠券码。',
+                'button-title'    => '应用',
+                'code'            => '优惠券代码',
+                'discount'        => '优惠券折扣',
+                'enter-your-code' => '输入您的代码',
+                'remove'          => '删除优惠券',
+                'sub-total'       => '小计',
+                'subtotal'        => '小计',
+            ],
+
+            'index' => [
+                'checkout' => '结帐',
+                'home'     => '主页',
+            ],
+
+            'payment' => [
+                'payment-method' => '付款方法',
+            ],
+
+            'shipping' => [
+                'shipping-method' => '送货方式',
+            ],
+
+            'summary' => [
+                'cart-summary'     => '购物车摘要',
+                'delivery-charges' => '运费',
+                'discount-amount'  => '折扣金额',
+                'grand-total'      => '总计',
+                'place-order'      => '下订单',
+                'processing'       => '处理中',
+                'sub-total'        => '小计',
+                'tax'              => '税',
+            ],
+        ],
     ],
 
-    'mail' => [
-        'order' => [
-            'subject' => '新订单确认',
-            'heading' => '订单确认!',
-            'dear' => '亲爱的 :customer_name',
-            'dear-admin' => '亲爱的 :admin_name',
-            'greeting' => '感谢您的订单 :order_id 创建在 :created_at',
-            'greeting-admin' => '订单ID :order_id 创建在 :created_at',
-            'summary' => '订单摘要',
-            'shipping-address' => '快递地址',
-            'billing-address' => '账单地址',
-            'contact' => '联系',
-            'shipping' => '快递方式',
-            'payment' => '支付方式',
-            'price' => '价格',
-            'quantity' => '数量',
-            'subtotal' => '小计',
-            'shipping-handling' => '快递 & 处理中',
-            'tax' => '税',
-            'discount' => '折扣',
-            'grand-total' => '累计',
-            'final-summary' => '感谢您对我们的商店表现出兴趣, 我们将在发货后向您发送跟踪号',
-            'help' => '如果您需要任何帮助, 请联系我们 :support_email',
-            'thanks' => '谢谢!',
+    'home' => [
+        'index' => [
+            'offer'               => '首次下单立减40%，现在开始购物',
+            'resend-verify-email' => '重新发送验证电子邮件',
+            'verify-email'        => '验证您的电子邮件帐户',
+        ],
+    ],
 
-            'comment' => [
-                'subject' => '新评论添加到您的订单 #:order_id',
-                'dear' => '亲爱的 :customer_name',
-                'final-summary' => '感谢您对我们的商店表现出兴趣',
-                'help' => '如果您需要任何帮助, 请联系我们 :support_email',
-                'thanks' => '谢谢!',
-            ],
+    'errors' => [
+        'go-to-home'   => '转到主页',
 
-            'cancel' => [
-                'subject' => '订单取消确认',
-                'heading' => '订单已取消',
-                'dear' => '亲爱的 :customer_name',
-                'greeting' => '您在 :created_at 上的订单, ID为 :order_id 的订单已被取消.',
-                'summary' => '订单摘要',
-                'shipping-address' => '快递地址',
-                'billing-address' => '账单地址',
-                'contact' => '联系',
-                'shipping' => '快递方式',
-                'payment' => '支付方式',
-                'subtotal' => '小计',
-                'shipping-handling' => '快递 & 处理中',
-                'tax' => '税',
-                'discount' => '折扣',
-                'grand-total' => '累计',
-                'final-summary' => '感谢您对我们的商店表现出兴趣',
-                'help' => '如果您需要任何帮助, 请联系我们 :support_email',
-                'thanks' => '谢谢!',
-            ]
+        '404' => [
+            'description' => '糟糕！您正在寻找的页面正在度假中。看来我们找不到您要搜索的内容。',
+            'title'       => '404 页面未找到',
         ],
 
-        'invoice' => [
-            'heading' => '您的发票 #:invoice_id 订单 #:order_id',
-            'subject' => '您的订单发票 #:order_id',
-            'summary' => '发票摘要',
-            'reminder' => [
-                'subject'                                          => '发票提醒',
-                'your-invoice-is-overdue'                          => '您的发票 :invoice 在 :time 已逾期.',
-                'please-make-your-payment-as-soon-as-possible'     => '请尽快付款.',
-                'if-you-ve-already-paid-just-disregard-this-email' => '如果您已经付款，请忽略此电子邮件.',
-            ],
+        '401' => [
+            'description' => '糟糕！看来您无权访问此页面。似乎您缺少必要的凭据。',
+            'title'       => '401 未经授权',
         ],
 
-        'shipment' => [
-            'heading' => '已为订单 #:order_id 生成快递单 #:shipment_id',
-            'inventory-heading' => '新货件 #:shipment_id 已为订单生成 #:order_id',
-            'subject' => '已为您的订单发货 #:order_id',
-            'inventory-subject' => '已为订单生成新快递单 #:order_id',
-            'summary' => '出货概要',
-            'carrier' => '承运者',
-            'tracking-number' => '追踪号码',
-            'greeting' => '一个订单 :order_id 已经被创建在 :created_at',
+        '403' => [
+            'description' => '糟糕！这个页面是禁止访问的。您似乎没有查看此内容所需的权限。',
+            'title'       => '403 禁止访问',
         ],
 
-        'refund' => [
-            'heading' => '为您的订单 #:order_id, 退款 #:refund_id',
-            'subject' => '为您的订单退款 #:order_id',
-            'summary' => '退款的概要',
-            'adjustment-refund' => '调整退款',
-            'adjustment-fee' => '调整费用'
+        '500' => [
+            'description' => '糟糕！出了些问题。看来我们在加载您正在寻找的页面时遇到了麻烦。',
+            'title'       => '500 内部服务器错误',
         ],
 
-        'forget-password' => [
-            'subject' => '客户重置密码',
-            'dear' => '亲爱的 :name',
-            'info' => '您收到这封电子邮件是因为我们收到了您帐户的密码重置请求',
-            'reset-password' => '重置密码',
-            'final-summary' => '如果您未请求重置密码, 则无需进一步操作',
-            'thanks' => '谢谢!'
+        '503' => [
+            'description' => '糟糕！这个页面不可用。请稍后再试。',
+            'title'       => '503 服务不可用',
         ],
+    ],
 
-        'update-password' => [
-            'subject' => '密码已更新',
-            'dear' => '亲爱的 :name',
-            'info' => '您收到这封电子邮件是因为您更新了密码.',
-            'thanks' => '谢谢!'
-        ],
+    'layouts' => [
+        'address'               => '地址',
+        'downloadable-products' => '可下载产品',
+        'my-account'            => '我的帐户',
+        'orders'                => '订单',
+        'profile'               => '个人资料',
+        'reviews'               => '评论',
+        'wishlist'              => '愿望清单',
+    ],
 
-        'customer' => [
-            'new' => [
-                'dear' => '亲爱的 :customer_name',
-                'username-email' => '用户名/电子邮件',
-                'subject' => '新客户注册',
-                'password' => '密码',
-                'summary' => '您的帐号已经建立.
-                您的帐户详细信息如下: ',
-                'thanks' => '谢谢!',
-            ],
+    'subscription' => [
+        'already'             => '您已经订阅了我们的新闻通讯。',
+        'subscribe-success'   => '您已成功订阅我们的新闻通讯。',
+        'unsubscribe-success' => '您已成功取消订阅我们的新闻通讯。',
+    ],
 
+    'emails' => [
+        'dear'   => '亲爱的 :customer_name',
+        'thanks' => '如果您需要任何帮助，请联系我们：<a href=":link" style=":style">:email</a>。<br/>谢谢！',
+
+        'customers' => [
             'registration' => [
-                'subject' => '新客户注册',
-                'customer-registration' => '客户成功注册',
-                'dear' => '亲爱的 :customer_name',
-                'dear-admin' => '亲爱的 :admin_name',
-                'greeting' => '欢迎并感谢您注册我们!',
-                'greeting-admin' => '您有一个新客户注册.',
-                'summary' => '您的帐户现已成功创建, 您可以使用您的电子邮件地址和密码凭据登录。 登录后, 您将能够访问其他服务, 包括查看过去的订单、愿望清单和编辑您的帐户信息.',
-                'thanks' => '谢谢!',
+                'description' => '您的帐户已成功创建，您可以使用电子邮件地址和密码凭据登录。登录后，您将能够访问其他服务，包括查看过去的订单、愿望清单和编辑您的帐户信息。',
+                'greeting'    => '欢迎并感谢您注册我们的网站！',
+                'subject'     => '新客户注册',
+                'sign-in'     => '登录',
+            ],
+
+            'forgot-password' => [
+                'description'    => '您收到此电子邮件，因为我们收到了有关您帐户的密码重置请求。',
+                'greeting'       => '忘记密码！',
+                'reset-password' => '重置密码',
+                'subject'        => '重置密码电子邮件',
+            ],
+
+            'update-password' => [
+                'description' => '您正在收到此电子邮件，因为您已更新您的密码。',
+                'greeting'    => '密码已更新！',
+                'subject'     => '密码已更新',
             ],
 
             'verification' => [
-                'heading' => config('app.name') . ' - 电子邮件确认',
-                'subject' => '确认邮件',
-                'verify' => '验证你的帐户',
-                'summary' => '这是用于验证您输入的电子邮件地址是否属于您的邮件。
-                请点击下方的验证您的帐户按钮以验证您的帐户.'
+                'description'  => '请单击下面的按钮以验证您的电子邮件地址。',
+                'greeting'     => '欢迎！',
+                'subject'      => '帐户验证电子邮件',
+                'verify-email' => '验证电子邮件地址',
             ],
 
-            'subscription' => [
-                'subject' => '订阅电子邮件',
-                'greeting' => '欢迎来到' . config('app.name') . ' - 电子邮件订阅',
+            'commented' => [
+                'description' => '备注是 - :note',
+                'subject'     => '新增评论',
+            ],
+
+            'subscribed' => [
+                'description' => '祝贺您加入我们的新闻通讯社区！我们很高兴您加入我们，随时向您提供最新的新闻、趋势和独家优惠。',
+                'greeting'    => '欢迎加入我们的新闻通讯！',
+                'subject'     => '您！订阅我们的新闻通讯',
                 'unsubscribe' => '取消订阅',
-                'summary' => '谢谢把我放进你的收件箱. 你已经有一段时间没有阅读了' . config('app.name') . ' 电子邮件, 我们不想让您的收件箱不堪重负。 如果您仍然不想收到
-                最新的电子邮件营销新闻, 然后确定点击下面的按钮.'
-            ]
-        ]
-    ],
+            ],
+        ],
 
-    'webkul' => [
-        'copy-right' => '© 版权 :year 网络库 软件，保留所有权利',
-    ],
+        'orders' => [
+            'created' => [
+                'greeting' => '感谢您的订单 :order_id，下单时间 :created_at',
+                'subject'  => '新订单确认',
+                'summary'  => '订单摘要',
+                'title'    => '订单确认！',
+            ],
 
-    'response' => [
-        'create-success' => ':name 已创建成功.',
-        'update-success' => ':name 已更新成功.',
-        'delete-success' => ':name 已删除成功.',
-        'submit-success' => ':name 已提交成功.'
+            'invoiced' => [
+                'greeting' => '您的发票号 #:invoice_id，订单号 :order_id，下单时间 :created_at',
+                'subject'  => '新发票确认',
+                'summary'  => '发票摘要',
+                'title'    => '发票确认！',
+            ],
+
+            'shipped' => [
+                'greeting' => '您的订单 :order_id，下单时间 :created_at，已发货',
+                'subject'  => '新发货确认',
+                'summary'  => '发货摘要',
+                'title'    => '订单已发货！',
+            ],
+
+            'refunded' => [
+                'greeting' => '已启动订单 :order_id，下单时间 :created_at 的退款',
+                'subject'  => '新退款确认',
+                'summary'  => '退款摘要',
+                'title'    => '订单已退款！',
+            ],
+
+            'canceled' => [
+                'greeting' => '您的订单 :order_id，下单时间 :created_at，已取消',
+                'subject'  => '新订单已取消',
+                'summary'  => '订单摘要',
+                'title'    => '订单已取消！',
+            ],
+
+            'commented' => [
+                'subject' => '新增评论',
+                'title'   => '新增评论已添加到您的订单 :order_id，下单时间 :created_at',
+            ],
+
+            'billing-address'   => '账单地址',
+            'contact'           => '联系方式',
+            'carrier'           => '运输公司',
+            'discount'          => '折扣',
+            'grand-total'       => '总计',
+            'name'              => '名称',
+            'payment'           => '支付',
+            'price'             => '价格',
+            'qty'               => '数量',
+            'shipping-address'  => '送货地址',
+            'shipping'          => '送货',
+            'sku'               => 'SKU',
+            'subtotal'          => '小计',
+            'shipping-handling' => '运输和处理',
+            'tracking-number'   => '跟踪号码：:tracking_number',
+            'tax'               => '税',
+        ],
     ],
 ];

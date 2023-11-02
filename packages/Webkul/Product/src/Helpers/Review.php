@@ -10,54 +10,36 @@ class Review
      * Returns the product's avg rating
      *
      * @param  \Webkul\Product\Contracts\Product  $product
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function getReviews($product)
     {
-        static $reviews = [];
-
-        if (array_key_exists($product->id, $reviews)) {
-            return $reviews[$product->id];
-        }
-
-        return $reviews[$product->id] = $product->reviews()->where('status', 'approved');
+        return $product->reviews()->where('status', 'approved');
     }
 
     /**
      * Returns the product's avg rating
      *
      * @param  \Webkul\Product\Contracts\Product  $product
-     * @return float
+     * @return string
      */
     public function getAverageRating($product)
     {
-        static $avgRating = [];
-
-        if (array_key_exists($product->id, $avgRating)) {
-            return $avgRating[$product->id];
-        }
-
-        return $avgRating[$product->id] = number_format(round($product->reviews->where('status', 'approved')->avg('rating'), 2), 1);
+        return number_format(round($product->reviews->where('status', 'approved')->avg('rating'), 2), 1);
     }
 
     /**
      * Returns the total review of the product
      *
-    * @param  \Webkul\Product\Contracts\Product  $product
+     * @param  \Webkul\Product\Contracts\Product  $product
      * @return int
      */
     public function getTotalReviews($product)
     {
-        static $totalReviews = [];
-
-        if (array_key_exists($product->id, $totalReviews)) {
-            return $totalReviews[$product->id];
-        }
-
-        return $totalReviews[$product->id] = $product->reviews->where('status', 'approved')->count();
+        return $product->reviews->where('status', 'approved')->count();
     }
 
-     /**
+    /**
      * Returns the total rating of the product
      *
      * @param  \Webkul\Product\Contracts\Product  $product
@@ -65,13 +47,7 @@ class Review
      */
     public function getTotalRating($product)
     {
-        static $totalRating = [];
-
-        if (array_key_exists($product->id, $totalRating)) {
-            return $totalRating[$product->id];
-        }
-
-        return $totalRating[$product->id] = $product->reviews->where('status', 'approved')->sum('rating');
+        return $product->reviews->where('status', 'approved')->sum('rating');
     }
 
     /**
@@ -82,13 +58,7 @@ class Review
      */
     public function getReviewsWithRatings($product)
     {
-        static $reviews = [];
-
-        if (array_key_exists($product->id, $reviews)) {
-            return $reviews[$product->id];
-        }
-
-        return $reviews[$product->id] = $product->reviews()
+        return $product->reviews()
             ->where('status', 'approved')
             ->select('rating', DB::raw('count(*) as total'))
             ->groupBy('rating')
@@ -96,11 +66,11 @@ class Review
             ->get();
     }
 
-     /**
+    /**
      * Returns the Percentage rating of the product
      *
-    * @param  \Webkul\Product\Contracts\Product  $product
-     * @return int
+     * @param  \Webkul\Product\Contracts\Product  $product
+     * @return array
      */
     public function getPercentageRating($product)
     {

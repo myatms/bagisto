@@ -17,6 +17,7 @@ class PaymentServiceProvider extends ServiceProvider
     public function boot()
     {
         include __DIR__ . '/../Http/helpers.php';
+        
         $this->app->register(EventServiceProvider::class);
     }
 
@@ -54,11 +55,7 @@ class PaymentServiceProvider extends ServiceProvider
     protected function registerConfig()
     {
         $this->mergeConfigFrom(
-            dirname(__DIR__) . '/Config/paymentmethods.php', 'paymentmethods'
-        );
-
-        $this->mergeConfigFrom(
-            dirname(__DIR__) . '/Config/system.php', 'core'
+            dirname(__DIR__) . '/Config/paymentmethods.php', 'payment_methods'
         );
     }
 }

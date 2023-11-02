@@ -27,6 +27,10 @@ class InvoiceItemRepository extends Repository
             return;
         }
 
+        if (! $data['product']->manage_stock) {
+            return;
+        }
+
         $orderedInventory = $data['product']->ordered_inventories()
             ->where('channel_id', $data['invoice']->order->channel->id)
             ->first();
@@ -45,7 +49,7 @@ class InvoiceItemRepository extends Repository
             ->orderBy('qty', 'desc')
             ->get();
 
-        foreach ($inventories as $key => $inventory) {
+        foreach ($inventories as $inventory) {
             if ($inventory->qty >= $data['qty']) {
                 $inventory->update(['qty' => $inventory->qty - $data['qty']]);
 

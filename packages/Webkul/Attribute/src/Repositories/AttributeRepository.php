@@ -8,6 +8,8 @@ use Webkul\Core\Eloquent\Repository;
 
 class AttributeRepository extends Repository
 {
+    protected $attributes = [];
+
     /**
      * Create a new repository instance.
      *
@@ -73,8 +75,6 @@ class AttributeRepository extends Repository
 
         $attribute = $this->find($id);
 
-        $data['enable_wysiwyg'] = isset($data['enable_wysiwyg']);
-
         $attribute->update($data);
 
         if (! in_array($attribute->type, ['select', 'multiselect', 'checkbox'])) {
@@ -114,7 +114,7 @@ class AttributeRepository extends Repository
      */
     public function validateUserInput($data)
     {
-        if ($data['is_configurable']) {
+        if (isset($data['is_configurable'])) {
             $data['value_per_channel'] = $data['value_per_locale'] = 0;
         }
 
@@ -182,40 +182,6 @@ class AttributeRepository extends Repository
     }
 
     /**
-     * Get attribute by code.
-     *
-     * @param  string  $code
-     * @return \Webkul\Attribute\Contracts\Attribute
-     */
-    public function getAttributeByCode($code)
-    {
-        static $attributes = [];
-
-        if (array_key_exists($code, $attributes)) {
-            return $attributes[$code];
-        }
-
-        return $attributes[$code] = $this->findOneByField('code', $code);
-    }
-
-    /**
-     * Get attribute by id.
-     *
-     * @param  int  $id
-     * @return \Webkul\Attribute\Contracts\Attribute
-     */
-    public function getAttributeById($id)
-    {
-        static $attributes = [];
-
-        if (array_key_exists($id, $attributes)) {
-            return $attributes[$id];
-        }
-
-        return $attributes[$id] = $this->find($id);
-    }
-
-    /**
      * Get family attributes.
      *
      * @param  \Webkul\Attribute\Contracts\AttributeFamily  $attributeFamily
@@ -223,13 +189,11 @@ class AttributeRepository extends Repository
      */
     public function getFamilyAttributes($attributeFamily)
     {
-        static $attributes = [];
-
-        if (array_key_exists($attributeFamily->id, $attributes)) {
-            return $attributes[$attributeFamily->id];
+        if (array_key_exists($attributeFamily->id, $this->attributes)) {
+            return $this->attributes[$attributeFamily->id];
         }
 
-        return $attributes[$attributeFamily->id] = $attributeFamily->custom_attributes;
+        return $this->attributes[$attributeFamily->id] = $attributeFamily->custom_attributes;
     }
 
     /**
